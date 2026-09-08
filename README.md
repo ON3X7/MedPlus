@@ -1,14 +1,14 @@
-# MedLife
+# Med+
 > **⚠️ Aviso de Licença e Direitos Autorais**
 > Este repositório está visível publicamente apenas para fins de demonstração de portfólio e arquitetura. **Este projeto não é open-source.** O uso, reprodução, comercialização ou distribuição de qualquer parte deste código sem autorização prévia é estritamente proibido. Consulte o arquivo `LICENSE` para mais detalhes.
 
 ## Sobre o Projeto
-O MedLife é o sistema operacional da vida médica. A plataforma foi desenhada para ajudar médicos a organizarem e cuidarem melhor da própria vida, centralizando carreira, patrimônio, hábitos e bem-estar em um único ambiente. 
+O Med+ é o sistema operacional da vida médica. A plataforma foi desenhada para ajudar médicos a organizarem e cuidarem melhor da própria vida, centralizando carreira, patrimônio, hábitos e bem-estar em um único ambiente. 
 
 Focado inicialmente em médicos plantonistas com múltiplos vínculos e alta carga horária, o sistema ataca a fragmentação da rotina e a falta de previsibilidade financeira, visando sempre a prevenção da sobrecarga. O grande diferencial do produto é não incentivar o profissional a trabalhar mais, mas sim oferecer clareza, equilíbrio e liberdade.
 
 ## Funcionalidades e Módulos (MVP)
-A arquitetura do MedLife oferece uma experiência premium, simples e minimalista, focada em entregar controle e confiança:
+A arquitetura do Med+ oferece uma experiência premium, simples e minimalista, focada em entregar controle e confiança:
 
 * **Dashboard Central:** Painel unificado exibindo receita prevista e recebida, o próximo plantão, metas financeiras, hábitos do dia, Life Score e insights gerados por IA.
 * **Agenda Inteligente:** Cadastro de plantões e consultas com visão semanal/mensal, valores associados, previsão de pagamento e status (previsto, recebido, atrasado).
