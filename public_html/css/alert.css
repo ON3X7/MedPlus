@@ -1,0 +1,35 @@
+﻿/* Notificação Flutuante (Toast) */
+.toast-notification {
+    position: fixed;
+    top: -100px; /* Escondido inicialmente fora da tela */
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffffff;
+    color: #1b2452; /* Midnight Navy para o texto */
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 9999;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: top 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Animação fluida */
+}
+
+/* Classe que faz o pop-up descer */
+.toast-notification.show {
+    top: 40px; 
+}
+
+.toast-icon {
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+}
+
+/* Cores específicas dos ícones */
+.toast-success i { color: #50c878; } /* Medical Emerald */
+.toast-error i   { color: #f44336; } /* Vermelho Alerta */
+.toast-loading i { color: #2196F3; } /* Azul */

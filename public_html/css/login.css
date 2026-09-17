@@ -1,0 +1,253 @@
+﻿/* Fundo geral */
+body.w3-background-theme {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+	margin: 0;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	overflow: hidden; 
+}
+
+/* nao deixa o usuario marcar o site, deixando com aparencia de aplicacao */
+* {
+	user-select: none; /* Padrão moderno (Chrome, Edge, Opera, Firefox) */
+	-webkit-user-select: none; /* Para Safari */
+	-moz-user-select: none; /* Para versões mais antigas do Firefox */
+	-ms-user-select: none; /* Para Internet Explorer e Edge antigo */
+	-webkit-tap-highlight-color: transparent;
+}
+
+/* Container principal */
+.login-wrapper {
+	position: relative; 
+	display: flex;
+	width: 1050px;
+	max-width: 95%;
+	background: #ffffff;
+	border-radius: 20px;
+	box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+	overflow: hidden; 
+	min-height: 650px; 
+}
+
+/* Área Esquerda que contém as duas abas */
+.forms-container {
+	flex: 1;
+	position: relative;
+	display: flex;
+	align-items: flex-start; 
+}
+
+/* Painel Base */
+.form-panel {
+	width: 100%;
+	padding: 40px 60px; 
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	position: absolute; 
+	top: 0;
+	height: 100%;
+	transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s ease;
+}
+
+#panel-login {
+	transform: translateX(0);
+	opacity: 1;
+	z-index: 2;
+	pointer-events: auto;
+}
+
+#panel-cadastro {
+	transform: translateX(-100%);
+	opacity: 0;
+	z-index: 1;
+	pointer-events: none; 
+}
+
+.wrapper-show-signup #panel-login {
+	transform: translateX(100%);
+	opacity: 0;
+	pointer-events: none;
+}
+
+.wrapper-show-signup #panel-cadastro {
+	transform: translateX(0);
+	opacity: 1;
+	z-index: 2;
+	pointer-events: auto;
+}
+
+.logo {
+	font-size: 1.6rem;
+	font-weight: 800;
+	color: #1b2452;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 20px;
+}
+.logo i { color: #50c878; font-size: 1.8rem; }
+
+.form-header { margin-bottom: 25px; }
+.form-title {
+	font-size: 1.9rem;
+	font-weight: 700;
+	color: #1b2452;
+	margin: 0 0 8px 0;
+	letter-spacing: -0.5px;
+}
+.form-subtitle { color: #757575; font-size: 0.95rem; margin: 0; }
+
+.input-group { margin-bottom: 15px; } 
+.input-group label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: 600;
+	font-size: 0.9rem;
+	color: #1b2452;
+}
+.input-group input {
+	width: 100%;
+	padding: 12px 16px; 
+	border: 1px solid #dcdcdc;
+	border-radius: 10px;
+	outline: none;
+	transition: all 0.3s;
+	font-family: inherit;
+	font-size: 1rem;
+	box-sizing: border-box;
+}
+.input-group input:focus {
+	border-color: #50c878;
+	box-shadow: 0 0 0 4px rgba(80, 200, 120, 0.15);
+}
+
+.form-options {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 0.9rem;
+	margin-bottom: 20px;
+}
+.form-options label { display: flex; align-items: center; gap: 8px; color: #616161; cursor: pointer; }
+.form-options a, .action-link { color: #1b2452; text-decoration: none; font-weight: 600; cursor: pointer; }
+.form-options a:hover, .action-link:hover { color: #50c878; text-decoration: underline; }
+
+.btn-submit {
+	width: 100%;
+	padding: 14px;
+	background-color: #50c878;
+	color: white;
+	border: none;
+	border-radius: 10px;
+	font-size: 1.05rem;
+	font-weight: 700;
+	cursor: pointer;
+	transition: background 0.3s, transform 0.1s;
+}
+.btn-submit:hover { background-color: #3dc068; }
+.btn-submit:active { transform: scale(0.98); }
+
+.signup-link, .login-link {
+	text-align: center;
+	margin-top: 15px;
+	font-size: 0.95rem;
+	color: #616161;
+}
+
+.divider {
+	display: flex;
+	align-items: center;
+	text-align: center;
+	margin: 15px 0;
+	color: #9e9e9e;
+	font-size: 0.85rem;
+}
+.divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #e0e0e0; }
+.divider:not(:empty)::before { margin-right: .8em; }
+.divider:not(:empty)::after { margin-left: .8em; }
+
+.btn-google {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	width: 100%;
+	padding: 12px;
+	background: #fff;
+	border: 1px solid #dcdcdc;
+	border-radius: 10px;
+	font-weight: 600;
+	color: #3a3a3a;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	font-size: 1rem;
+}
+.btn-google:hover { background: #f8f9fa; border-color: #c0c0c0; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+
+.form-row { display: flex; gap: 15px; }
+.form-row .input-group { flex: 1; }
+
+.login-right {
+	flex: 1.1;
+	background-color: #1b2452; 
+	color: #ffffff;
+	padding: 60px;
+	position: relative;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	z-index: 5; 
+}
+.login-right::before {
+	content: ''; position: absolute; width: 800px; height: 800px; border-radius: 50%;
+	background: rgba(47, 63, 141, 0.4); top: -300px; right: -250px;
+}
+.login-right::after {
+	content: ''; position: absolute; width: 380px; height: 380px; border-radius: 50%;
+	border: 80px solid rgba(47, 63, 141, 0.2); bottom: -200px; left: -150px;
+}
+.roulette-wrapper { position: relative; z-index: 2; }
+.static-text { font-size: 1.3rem; color: #8694d7; margin-bottom: 15px; font-weight: 600; letter-spacing: 0.5px; }
+.anim-container { display: flex; flex-direction: column; gap: 15px; }
+.anim-title { font-size: 3.8rem; font-weight: 800; line-height: 1.1; margin: 0; display: flex; align-items: center; gap: 20px; letter-spacing: -1px; }
+.anim-title i { color: #50c878; font-size: 3.2rem; }
+.anim-desc { font-size: 1.6rem; color: #c3c9eb; margin: 0; font-weight: 300; }
+.fade-in-up { animation: fadeInUp 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+@keyframes fadeInUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 768px) {
+    /* Oculta o lado direito com a animação no mobile */
+    .login-right {
+        display: none;
+    }
+
+    /* Permite que o container principal se ajuste ao conteúdo da tela mobile */
+    body.w3-background-theme {
+        overflow: auto;
+    }
+
+    /* Ajusta o wrapper para ocupar a tela inteira com bordas e sombras adequadas */
+    .login-wrapper {
+        width: 100%;
+        max-width: 100%;
+        min-height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    /* Ajusta o espaçamento dos formulários para telas menores */
+    .form-panel {
+        padding: 30px 20px;
+    }
+
+    /* Coloca os campos de senha do cadastro em coluna, em vez de linha, para evitar esmagamento */
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
