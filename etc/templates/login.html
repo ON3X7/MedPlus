@@ -6,9 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/w3.css">
     <link rel="stylesheet" href="/css/login.css">
-    <link rel="stylesheet" href="/css/alert.css"> <!-- notification pop-up -->
+    <link rel="stylesheet" href="/css/notification.css"> <!-- notification pop-up -->
     <link rel="stylesheet" href="/css/fontawesome-free-7.2.0-web/css/all.min.css">
-    <script src="/js/alert.js"></script> <!-- notification pop-up -->
+    <script src="/js/ajax.js"></script>
+    <script src="/js/login_form.js"></script>
+    <script src="/js/notification.js"></script> <!-- notification pop-up -->
 </head>
 <body class="w3-background-theme">
     <div class="login-wrapper" id="main-wrapper">
@@ -26,21 +28,22 @@
                     <p class="form-subtitle">Bem-vindo de volta! Por favor, insira seus dados.</p>
                 </div>
 
-                <form id="form-login" action="/login_auth" method="POST">
+                <form id="form-login" action="/medplus.php" method="POST">
+					<input type="hidden" name="acao" value="validarLogin">
                     <div class="input-group">
-                        <label for="login-email">E-mail</label>
-                        <input type="email" id="login-email" name="email" placeholder="Digite seu e-mail">
-                        <span id="emailValidationAlert" class="w3-small w3-text-red w3-hide"></span>
+                        <label for="email-login">E-mail</label>
+                        <input type="email" id="email-login" name="email" placeholder="Digite seu e-mail" required>
+                        <span id="emailAlert1" class="w3-small w3-text-red w3-hide"></span>
                     </div>
                     <div class="input-group">
-                        <label for="login-senha">Senha</label>
-                        <input type="password" id="login-senha" name="senha" placeholder="••••••••">
+                        <label for="senha-login">Senha</label>
+                        <input type="password" id="senha-login" name="senha" placeholder="••••••••" required>
                     </div>
                     <div class="form-options">
-                        <label><input type="checkbox" name="lembrar"> Lembrar por 30 dias</label>
+                        <label><input type="checkbox" id="lembrar" name="lembrar" value="sim"> Lembrar por 30 dias</label>
                         <a href="#">Esqueceu a senha?</a>
                     </div>
-                    <button type="submit" class="btn-submit">Entrar</button>
+                    <button type="button" id="button-login" class="btn-submit"onclick="logar();">Entrar</button>
                     <div class="signup-link">
                         Não tem uma conta? <span class="action-link" onclick="toggleForms()">Cadastre-se</span>
                     </div>
@@ -69,28 +72,30 @@
                     <p class="form-subtitle">Junte-se a nós e transforme sua rotina.</p>
                 </div>
 
-                <form id="form-cadastro" action="/register_auth" method="POST">
+                <form id="form-cadastro" action="/medplus.php" method="POST">
+				<input type="hidden" name="acao" value="criarConta">
                     <div class="input-group">
-                        <label for="cad-nome">Nome Completo</label>
-                        <input type="text" id="cad-nome" name="nome" placeholder="Seu nome">
+                        <label for="nome-cadastro">Nome Completo</label>
+                        <input type="text" id="nome-cadastro" name="nome" placeholder="Seu nome" required>
                     </div>
                     <div class="input-group">
-                        <label for="cad-email">E-mail</label>
-                        <input type="email" id="cad-email" name="email" placeholder="Digite seu e-mail">
+                        <label for="email-cadastro">E-mail</label>
+                        <input type="email" id="email-cadastro" name="email" placeholder="Digite seu e-mail" required>
+						<span id="emailAlert2" class="w3-small w3-text-red w3-hide"></span>
                     </div>
                     
                     <div class="form-row">
                         <div class="input-group">
-                            <label for="cad-senha">Senha</label>
-                            <input type="password" id="cad-senha" name="senha" placeholder="••••••••">
+                            <label for="senha-cadastro">Senha</label>
+                            <input type="password" id="senha-cadastro" name="senha" placeholder="••••••••" required>
                         </div>
                         <div class="input-group">
-                            <label for="cad-confirma">Confirmar Senha</label>
-                            <input type="password" id="cad-confirma" name="confirma_senha" placeholder="••••••••">
+                            <label for="confirma-cadastro">Confirmar Senha</label>
+                            <input type="password" id="confirma-cadastro" class="" name="confirma_senha" placeholder="••••••••" oninput="compararSenhas();" required>
                         </div>
                     </div>
                     
-                    <button type="submit" class="btn-submit">Cadastrar</button>
+                    <button type="button" id="button-cadastro" class="btn-submit" onclick="registrar();">Cadastrar</button>
                     <div class="login-link">
                         Já tem uma conta? <span class="action-link" onclick="toggleForms()">Faça login</span>
                     </div>

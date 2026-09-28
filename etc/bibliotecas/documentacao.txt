@@ -1,0 +1,85 @@
+Este presente documento tem como objetivo exemplificar o uso das principais classes PHP
+- SQL
+	Exemplo 1: Listando vários registros (Select múltiplo com parâmetros)
+	$db = new Query();
+
+	// Busca plantões do usuário ordenados por data
+	$plantoes = $db->setSchema('public')
+				   ->adicionar("SELECT * FROM plantoes")
+				   ->adicionar("WHERE id_medico = $1 AND status = $2")
+				   ->adicionar("ORDER BY data_plantao DESC")
+				   ->realizarQuery([42, 'previsto'])
+				   ->listar();
+
+	// A variável $plantoes será um array com todos os resultados
+	print_r($plantoes);
+	
+	
+	Exemplo 2: Recuperando um único registro (Select único)
+	$db = new Query();
+
+	// Limpa a instância (opcional se for uma nova, útil se for reaproveitar a mesma variável $db)
+	$medico = $db->limpar()
+				 ->adicionar("SELECT nome, email FROM medicos WHERE id = $1 LIMIT 1")
+				 ->realizarQuery([42])
+				 ->recuperar();
+
+	// A variável $medico será um array associativo simples: ['nome' => '...', 'email' => '...']
+	echo $medico['nome'];
+	
+	
+	Exemplo 3: Executando um INSERT, UPDATE ou DELETE
+	$db = new Query();
+
+	// Insere um novo hábito (não precisa chamar listar() ou recuperar() depois de realizarQuery)
+	$db->adicionar("INSERT INTO habitos (id_medico, tipo_habito, valor) VALUES ($1, $2, $3)")
+	   ->realizarQuery([42, 'sono', 8]);
+	
+	
+	Exemplo 4: remover com begin
+	try {
+		// Inicia a transação diretamente pela classe Query[cite: 21, 22]
+		$this->db->limpar()->adicionar("BEGIN")->realizarQuery();
+
+		// 1. Primeiro apaga os itens que dependem da categoria
+		$this->db->limpar()
+				 ->adicionar("DELETE FROM item WHERE id_categoria = $1")
+				 ->realizarQuery([$id]);
+
+		// 2. Depois apaga a categoria "mãe"
+		$this->db->limpar()
+				 ->adicionar("DELETE FROM categoria WHERE id = $1")
+				 ->realizarQuery([$id]);
+
+		// Confirma as alterações na base de dados[cite: 21]
+		$this->db->limpar()->adicionar("COMMIT")->realizarQuery();
+		return true;
+
+	} catch (Exception $e) {
+		// Interceta qualquer exceção lançada pelo método realizarQuery() e desfaz a operação[cite: 21, 22]
+		$this->db->limpar()->adicionar("ROLLBACK")->realizarQuery();
+		return false;
+	}
+	
+	
+- Alerta
+	// 1. Alerta de Erro Simples (Sem botão)
+	$alertaErro = new ObjetoAlerta('etc/html/', 'alerta.html');
+	$alertaErro->configurarAlerta(
+		'error', 
+		'Acesso Negado', 
+		'As credenciais informadas estão incorretas.'
+	);
+	$alertaErro->imprimir();
+
+
+	// 2. Alerta de Sucesso (Com botão)
+	$alertaSucesso = new ObjetoAlerta('etc/html/', 'alerta.html');
+	$alertaSucesso->configurarAlerta(
+		'success', 
+		'Cadastro Concluído', 
+		'Sua conta MedLife foi criada com sucesso.', 
+		'/dashboard.php', 
+		'Ir para o Dashboard'
+	);
+	$alertaSucesso->imprimir();

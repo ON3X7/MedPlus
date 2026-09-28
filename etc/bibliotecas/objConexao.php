@@ -13,7 +13,7 @@
 		public static function getInstancia() {
 			if (self::$instancia === null) {
 				// Captura a global definida no seu arquivo de configuração
-				global $conexao;
+				$conexao = $GLOBALS['conexao'];
 				
 				// pg_pconnect estabelece uma conexão persistente
 				self::$instancia = pg_pconnect($conexao);

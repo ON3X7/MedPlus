@@ -91,7 +91,7 @@
 		public function recuperar() {
 			if ($this->resultado) {
 				$linha = pg_fetch_assoc($this->resultado);
-				return $linha !== false ? $linha : null;
+				return $linha !== false ? $linha : array();
 			}
 			return null;
 		}
