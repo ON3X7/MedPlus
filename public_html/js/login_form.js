@@ -128,6 +128,25 @@ function compararSenhas() {
 	}
 }
 
+// Alterna a visibilidade da senha
+function toggleVisibility(inputId, iconElement) {
+    const input = document.getElementById(inputId);
+    
+    if (input.type === 'password') {
+        // Mostra a senha
+        input.type = 'text';
+        // Troca o ícone de olho aberto para olho cortado (escondido)
+        iconElement.classList.remove('fa-eye');
+        iconElement.classList.add('fa-eye-slash');
+    } else {
+        // Esconde a senha
+        input.type = 'password';
+        // Troca de volta para o olho aberto
+        iconElement.classList.remove('fa-eye-slash');
+        iconElement.classList.add('fa-eye');
+    }
+}
+
 // --- INTEGRAÇÃO GOOGLE AUTH ---
 
 window.addEventListener('load', function () {

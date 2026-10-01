@@ -251,3 +251,31 @@ body.w3-background-theme {
         gap: 0;
     }
 }
+
+/* Container para alinhar input e ícone */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Garante que o input ocupe 100% e dá um espaço à direita para o texto não encostar no ícone */
+.password-wrapper input {
+    width: 100%;
+    padding-right: 40px; 
+}
+
+/* Estilo e posicionamento do ícone Font Awesome */
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    cursor: pointer;
+    color: #6a737d; /* Cor cinza neutra */
+    transition: color 0.3s ease;
+    font-size: 1.1em;
+}
+
+/* Efeito ao passar o mouse (pode alterar para o verde do MedPlus, ex: #2ecc71) */
+.toggle-password:hover {
+    color: #333; 
+}

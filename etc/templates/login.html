@@ -38,9 +38,12 @@
                         <span id="emailAlert1" class="w3-small w3-text-red w3-hide"></span>
                     </div>
                     <div class="input-group">
-                        <label for="senha-login">Senha</label>
-                        <input type="password" id="senha-login" name="senha" placeholder="••••••••" required>
-                    </div>
+						<label for="senha-login">Senha</label>
+						<div class="password-wrapper">
+							<input type="password" id="senha-login" name="senha" placeholder="••••••••" required>
+							<i class="fa-solid fa-eye toggle-password" onclick="toggleVisibility('senha-login', this)"></i>
+						</div>
+					</div>
                     <div class="form-options">
                         <label><input type="checkbox" id="lembrar" name="lembrar" value="sim"> Lembrar por 30 dias</label>
                         <a href="#">Esqueceu a senha?</a>
@@ -80,15 +83,21 @@
                     </div>
                     
                     <div class="form-row">
-                        <div class="input-group">
-                            <label for="senha-cadastro">Senha</label>
-                            <input type="password" id="senha-cadastro" name="senha" placeholder="••••••••" required>
-                        </div>
-                        <div class="input-group">
-                            <label for="confirma-cadastro">Confirmar Senha</label>
-                            <input type="password" id="confirma-cadastro" class="" name="confirma_senha" placeholder="••••••••" oninput="compararSenhas();" required>
-                        </div>
-                    </div>
+						<div class="input-group">
+							<label for="senha-cadastro">Senha</label>
+							<div class="password-wrapper">
+								<input type="password" id="senha-cadastro" name="senha" placeholder="••••••••" required>
+								<i class="fa-solid fa-eye toggle-password" onclick="toggleVisibility('senha-cadastro', this)"></i>
+							</div>
+						</div>
+						<div class="input-group">
+							<label for="confirma-cadastro">Confirmar Senha</label>
+							<div class="password-wrapper">
+								<input type="password" id="confirma-cadastro" class="" name="confirma_senha" placeholder="••••••••" oninput="compararSenhas();" required>
+								<i class="fa-solid fa-eye toggle-password" onclick="toggleVisibility('confirma-cadastro', this)"></i>
+							</div>
+						</div>
+					</div>
                     
                     <button type="button" id="button-cadastro" class="btn-submit" onclick="registrar();">Cadastrar</button>
                     <div class="login-link">
