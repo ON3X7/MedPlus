@@ -1,4 +1,5 @@
 <?php
+	header('Cross-Origin-Opener-Policy: same-origin-allow-popups');
 	// Copyright (c) 2026 Walleson Douglas. Todos os direitos reservados.
 	
 	include "../config/config.php"; //caminhos
@@ -142,6 +143,56 @@
 				
 			} else {
 				echo json_encode(array('status' => false, 'mensagem' => 'O e-mail utilizado já está sendo usado. Por favor, efetue o login.'));
+			}
+		}
+		
+		// AREA DE REQUISICAO GOOGLE
+		function loginGoogle() {
+			$token = $_POST['credential'] ?? '';
+			
+			if (empty($token)) {
+				echo json_encode(array('status' => false, 'mensagem' => 'Token ausente.'));
+				return;
+			}
+
+			// Validação manual do token diretamente no servidor do Google (Sem Composer)
+			$url = "https://oauth2.googleapis.com/tokeninfo?id_token=" . $token;
+			
+			// Suprime warnings caso o token seja inválido e retorne 400
+			$response = @file_get_contents($url); 
+			
+			if ($response === false) {
+				echo json_encode(array('status' => false, 'mensagem' => 'Token inválido ou expirado.'));
+				return;
+			}
+
+			$payload = json_decode($response, true);
+
+			// Se o Google validar o token, ele retorna os dados do usuário
+			if (isset($payload['email'])) {
+				$this->campos['email'] = $payload['email'];
+				$this->campos['nome'] = $payload['name'];
+				$this->campos['lembrar'] = 'sim'; // Para já criar o cookie de 30 dias no login via Google
+				
+				$oUsua = new usuarioDAO();
+				
+				// Verifica se a conta já existe através da função checarEmail()
+				$contaExiste = $oUsua->checarEmail($this->campos);
+				
+				if (count($contaExiste) === 0) {
+					// Conta nova: Cria o usuário marcando via_google = true
+					$oUsua->novoUsuarioGoogle($this->campos);
+				} else {
+					// Conta existente: Atualiza a flag via_google para true, permitindo o login sem senha neste e em futuros acessos via Google
+					$oUsua->ativarViaGoogle($this->campos['email']);
+				}
+				
+				// Constrói a sessão passando o segundo parâmetro como true (bypass de senha)
+				Session::contruirSessao($this->campos, true);
+				
+				echo json_encode(array('status' => true));
+			} else {
+				echo json_encode(array('status' => false, 'mensagem' => 'Falha ao decodificar dados do Google.'));
 			}
 		}
 	}

@@ -61,6 +61,37 @@
 			}
 		}
 		
+		// Insere um novo usuário vindo exclusivamente do Google
+		function novoUsuarioGoogle($campos) {
+			try {
+				$params = array (
+					$campos['nome'], // O Google já costuma enviar o nome formatado corretamente
+					strtolower($campos['email']),
+					'true' // Seta a coluna via_google como verdadeira
+				);
+				
+				// A senha é deixada em branco/nula, pois a autenticação é delegada ao Google
+				$this->db->limpar()
+						 ->adicionar("INSERT INTO usuario (nome, email, via_google) VALUES ($1, $2, $3);")
+						 ->realizarQuery($params);
+				return true;
+			} catch (Exception $e) {
+				return false;
+			}
+		}
+
+		// Atualiza um usuário existente que acessou via Google, permitindo que a sessão ignore a senha
+		function ativarViaGoogle($email) {
+			try {
+				$this->db->limpar()
+						 ->adicionar("UPDATE usuario SET via_google = true WHERE email = $1;")
+						 ->realizarQuery([strtolower($email)]);
+				return true;
+			} catch (Exception $e) {
+				return false;
+			}
+		}
+		
 		function remover($id) {
 			try {
 				// Inicia a transação diretamente pela classe Query[cite: 21, 22]

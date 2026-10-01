@@ -127,3 +127,59 @@ function compararSenhas() {
 		senha2.classList.remove('w3-border-red');
 	}
 }
+
+// --- INTEGRAÇÃO GOOGLE AUTH ---
+
+window.addEventListener('load', function () {
+    // Inicializa a API do Google
+    google.accounts.id.initialize({
+        client_id: "323794095144-m0qfnhgb0gpm9bbbsch1odh5l05kva2k.apps.googleusercontent.com",
+        callback: handleGoogleLogin
+    });
+    
+    // Renderiza o botão no formulário de Login
+    const containerLogin = document.getElementById("btn-google-login");
+    if (containerLogin) {
+        google.accounts.id.renderButton(containerLogin, { 
+            theme: "outline", 
+            size: "large", 
+            width: "350", // Ajuste a largura de acordo com o seu CSS
+            text: "signin_with" 
+        });
+    }
+
+    // Renderiza o botão no formulário de Cadastro
+    const containerCadastro = document.getElementById("btn-google-cadastro");
+    if (containerCadastro) {
+        google.accounts.id.renderButton(containerCadastro, { 
+            theme: "outline", 
+            size: "large", 
+            width: "350",
+            text: "signup_with" 
+        });
+    }
+});
+
+function handleGoogleLogin(response) {
+    let ajaxAssincrono = new CustomAjax(true);
+    
+    // Passamos a ação 'loginGoogle' e o token recebido
+    ajaxAssincrono.add("acao", "loginGoogle");
+    ajaxAssincrono.add("credential", response.credential);
+    
+    ajaxAssincrono.send("medplus.php").then(res => {
+        try {
+            let json = JSON.parse(res);
+            
+            if (!json.status) {
+                showNotification('error', json.mensagem || 'Falha ao autenticar com o Google.');
+            } else {
+                // Se o backend confirmar o cadastro/login, recarrega ou redireciona
+                window.location.href = "/medplus.php"; 
+            }
+        } catch (e) {
+            showNotification('error', 'Erro interno no servidor ao validar Google - 102');
+            console.log(res);
+        }
+    }).catch(erro => console.error("Erro no AJAX Google:", erro));
+}

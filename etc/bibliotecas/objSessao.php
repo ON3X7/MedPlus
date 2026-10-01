@@ -14,13 +14,39 @@
 			return isset($_SESSION['user']) || isset($_COOKIE['medplus_lembre_me']);
 		}
 		
-		// constroi sessao, nesse cenario, o usuario passa pela tela de login
-		public static function contruirSessao($campos)
+		// constroi sessao, recebe parametro opcional via_google para bypassar senha
+		public static function contruirSessao($campos, $via_google = false)
 		{
-			self::novaSessao($campos); // cria sessao de navegador
+			self::novaSessao($campos, $via_google); // cria sessao de navegador[cite: 10]
 			
 			if ($campos['lembrar'] === "sim") {
-				self::novoToken(); // cria um token de acesso de 30 dias
+				self::novoToken(); // cria um token de acesso de 30 dias[cite: 10]
+			}
+		}
+
+		// resgata sessao do banco e salva em SESSION diretamente
+		public static function novaSessao($campos, $via_google = false) {
+			$db = new Query();
+
+			if ($via_google) {
+				// Query EXCLUSIVA para Google: Ignora a senha, checa apenas o email[cite: 10]
+				$params = array ($campos['email']);
+				
+				$_SESSION['user'] = $db->adicionar("SELECT id, nome, email, data_nascimento, sexo, imagem, via_google, ultimo_acesso")
+									   ->adicionar("FROM usuario WHERE email = $1")
+									   ->realizarQuery($params)
+									   ->recuperar();
+			} else {
+				// Query PADRÃO: Exige email e senha[cite: 10]
+				$params = array (
+					$campos['email'],
+					hash('sha256', $campos['senha'])
+				);
+				
+				$_SESSION['user'] = $db->adicionar("SELECT id, nome, email, data_nascimento, sexo, imagem, via_google, ultimo_acesso")
+									   ->adicionar("FROM usuario WHERE email = $1 AND senha = $2")
+									   ->realizarQuery($params)
+									   ->recuperar();
 			}
 		}
 		
@@ -89,21 +115,6 @@
 			// 4. Envia o cookie para o navegador com as travas de segurança ativadas
 			// Parâmetros: nome, valor, validade, caminho, dominio, secure, httponly
 			setcookie('medplus_lembre_me', $token, $validade_timestamp, '/', 'dash.medplus.app.br', true, true);
-		}
-		
-		public static function novaSessao($campos) {
-			$db = new Query();
-
-			//parametros
-			$params = array (
-				$campos['email'],
-				hash('sha256', $campos['senha'])
-			);
-			
-			$_SESSION['user'] = $db->adicionar("SELECT id, nome, email, data_nascimento, sexo, imagem, via_google, ultimo_acesso")
-								   ->adicionar("FROM usuario WHERE email = $1 AND senha = $2")
-								   ->realizarQuery($params)
-								   ->recuperar();
 		}
 		
 		public static function registrarAcessoAtivo() {
