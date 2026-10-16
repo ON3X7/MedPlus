@@ -1,0 +1,114 @@
+/* =========================================
+   FONTES LOCAIS (DM Sans) E RESET
+========================================= */
+@font-face {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/css/fonts/DM_Sans/woff2/DMSans-Regular.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('/css/fonts/DM_Sans/woff2/DMSans-Medium.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('/css/fonts/DM_Sans/woff2/DMSans-SemiBold.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('/css/fonts/DM_Sans/woff2/DMSans-Bold.woff2') format('woff2');
+}
+
+:root { 
+    font-family: "DM Sans", sans-serif; 
+    color: #13283a; 
+    background: #f5f8fa; 
+    font-synthesis: none; 
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; min-height: 100vh; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+.app { min-height: 100vh; background: #f5f8fa; }
+
+/* =========================================
+   MENU LATERAL E CABEÇALHO (DESKTOP)
+========================================= */
+.sidebar { position: fixed; inset: 0 auto 0 0; z-index: 20; width: 224px; padding: 25px 14px 18px; display: flex; flex-direction: column; color: #dbe6ed; background: #061c2c; }
+.brand { padding: 0 10px 30px; display: flex; align-items: center; color: white; font-size: 21px; font-weight: 700; }
+.brand > span, .mobile-brand span { color: #12b8a7; }
+.brand > b { width: 31px; height: 31px; display: grid; place-items: center; border: 1.5px solid #14b8a6; border-radius: 10px; color: #14b8a6; font-size: 16px; }
+
+.sidebar nav { display: flex; flex-direction: column; gap: 5px; }
+.sidebar nav button { width: 100%; padding: 11px 13px; display: flex; align-items: center; gap: 13px; border: 0; border-radius: 8px; color: #aab9c4; background: transparent; font-size: 13px; text-align: left; transition: 160ms ease; }
+.sidebar nav button i { width: 17px; text-align: center; }
+.sidebar nav button:hover { color: white; background: #0c2b3e; }
+.sidebar nav button.active { color: white; background: linear-gradient(90deg, #0fae9e, #0b8f89); box-shadow: 0 8px 20px #02101780; }
+
+.premium { margin-top: auto; padding: 13px 11px; display: flex; align-items: center; gap: 9px; border: 1px solid #18384a; border-radius: 10px; background: #0a2638; }
+.premium > i:first-child { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 8px; color: #10b8a7; background: #0c3448; }
+.premium div { flex: 1; display: flex; flex-direction: column; }
+.premium strong { color: white; font-size: 11px; }
+.premium small { color: #0bc0ad; font-size: 9px; }
+.premium > i:last-child { font-size: 9px; }
+
+main { min-height: 100vh; margin-left: 224px; }
+.topbar { height: 68px; padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e5ecef; background: white; }
+.mobile-brand { display: none; font-size: 20px; font-weight: 700; }
+
+.search { width: 330px; height: 36px; padding: 0 13px; display: flex; align-items: center; gap: 9px; border: 1px solid #e4eaee; border-radius: 8px; color: #92a0ac; background: #fafcfd; }
+.search input { width: 100%; border: 0; outline: 0; color: #26384a; background: transparent; font-size: 11px; }
+
+.user-actions { display: flex; align-items: center; gap: 8px; }
+.user-actions > button, .day-panel > header button { position: relative; width: 34px; height: 34px; border: 0; border-radius: 50%; color: #667684; background: transparent; }
+.user-actions > button:hover { background: #f0f5f7; }
+.user-actions em { position: absolute; top: 7px; right: 7px; width: 6px; height: 6px; border: 1px solid white; border-radius: 50%; background: #12b8a7; }
+
+.profile { margin-left: 7px; padding-left: 15px; display: flex; align-items: center; gap: 10px; border-left: 1px solid #e7edef; }
+.profile > b { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; color: white; background: linear-gradient(145deg, #153e56, #13b8a7); font-size: 11px; }
+.profile div { min-width: 116px; display: flex; flex-direction: column; }
+.profile strong { font-size: 10px; }
+.profile small { color: #83919c; font-size: 9px; }
+.profile > i { color: #91a0aa; font-size: 9px; }
+
+/* Wrapper global de conteúdo */
+.content { max-width: 1440px; margin: 0 auto; padding: 28px 30px 42px; }
+
+/* =========================================
+   ELEMENTOS GERAIS (NOTIFICAÇÕES E MOBILE)
+========================================= */
+.mobile-nav { display: none; }
+.toast { position: fixed; z-index: 99; right: 25px; bottom: 25px; padding: 12px 17px; border-radius: 8px; color: white; background: #092438; box-shadow: 0 9px 26px #061c2c45; font-size: 11px; animation: appear .2s ease-out; }
+.toast i { margin-right: 6px; color: #11b8a7; }
+@keyframes appear { from { opacity: 0; transform: translateY(8px); } }
+
+/* Responsividade Global/Menu */
+@media (max-width: 760px) {
+    .sidebar { display: none; } 
+    main { margin-left: 0; padding-bottom: 68px; }
+    .topbar { height: 58px; padding: 0 17px; }
+    .mobile-brand { display: block; }
+    .search { width: 35px; padding: 0; justify-content: center; border: 0; background: transparent; }
+    .search input { display: none; }
+    .user-actions > button:nth-of-type(2), .profile div, .profile > i { display: none; }
+    .profile { margin-left: 0; padding-left: 7px; }
+    .profile > b { width: 31px; height: 31px; }
+    .content { padding: 22px 15px 25px; }
+    
+    .mobile-nav { position: fixed; z-index: 50; inset: auto 0 0; height: 65px; padding: 6px 5px 5px; display: flex; align-items: center; justify-content: space-around; border-top: 1px solid #e1e8eb; background: white; box-shadow: 0 -5px 18px #12344612; }
+    .mobile-nav button { min-width: 56px; height: 50px; border: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; color: #95a1aa; background: transparent; font-size: 8px; }
+    .mobile-nav button i { font-size: 15px; }
+    .mobile-nav button.active { color: #0b9f92; }
+    .toast { right: 15px; bottom: 78px; left: 15px; text-align: center; }
+}

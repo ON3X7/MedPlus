@@ -1,0 +1,122 @@
+:root {
+  --anim-fast: 150ms;
+  --anim-normal: 220ms;
+  --anim-ease: cubic-bezier(.22, .61, .36, 1);
+}
+
+/* Troca de módulos */
+.module-page.anim-module-in {
+  display: block;
+  animation: anim-module-in var(--anim-normal) var(--anim-ease) both;
+}
+.module-page.anim-module-out {
+  animation: anim-module-out var(--anim-fast) ease-in both;
+  pointer-events: none;
+}
+
+/* Atualizações dinâmicas da agenda */
+#calendar.anim-content-in { animation: anim-content-in 190ms var(--anim-ease) both; }
+#appointments.anim-content-in > article,
+#appointments.anim-content-in > .empty {
+  animation: anim-item-in 210ms var(--anim-ease) both;
+}
+#appointments.anim-content-in > :nth-child(2) { animation-delay: 40ms; }
+#appointments.anim-content-in > :nth-child(3) { animation-delay: 80ms; }
+.dynamic-fields.anim-fields-in { animation: anim-fields-in 180ms var(--anim-ease) both; }
+.summaries article { animation: anim-card-rise 260ms var(--anim-ease) both; }
+.summaries article:nth-child(2) { animation-delay: 45ms; }
+.summaries article:nth-child(3) { animation-delay: 90ms; }
+
+/* Modais */
+.custom-modal-overlay.anim-modal-in { animation: anim-overlay-in 160ms ease-out both; }
+.custom-modal-overlay.anim-modal-out { animation: anim-overlay-out var(--anim-fast) ease-in both; pointer-events: none; }
+.custom-modal-box.anim-modal-box-in { animation: anim-modal-box-in var(--anim-normal) var(--anim-ease) both; transform-origin: center 18%; }
+.custom-modal-box.anim-modal-box-out { animation: anim-modal-box-out var(--anim-fast) ease-in both; }
+
+/* Microinterações */
+.sidebar nav button, .mobile-nav button, .primary, .month button, .views button,
+.date, .summaries article, .appointments article, .tab-btn, .btn-primary,
+.btn-outline, .btn-danger, .btn-close {
+  transition: color var(--anim-fast) ease, background-color var(--anim-fast) ease,
+    border-color var(--anim-fast) ease, box-shadow var(--anim-normal) ease,
+    transform var(--anim-fast) ease;
+}
+.sidebar nav button:active, .mobile-nav button:active, .primary:active,
+.month button:active, .btn-primary:active, .btn-outline:active,
+.btn-danger:active { transform: scale(.96); }
+.sidebar nav button.active i, .mobile-nav button.active i { animation: anim-icon-pop 190ms var(--anim-ease); }
+.summaries article:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(25, 54, 74, .08); }
+.appointments article:hover { padding-inline: 7px; border-radius: 7px; background: #f8fbfc; transform: translateX(2px); }
+.date:not(.muted):hover { z-index: 1; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(23, 56, 76, .08); }
+.date.selected > span { animation: anim-selected-pop 180ms var(--anim-ease); }
+.btn-close:hover { transform: rotate(8deg) scale(1.08); }
+
+.anim-ripple-host { position: relative; overflow: hidden; }
+.anim-ripple {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: .16;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0);
+  animation: anim-ripple 430ms ease-out forwards;
+}
+
+@keyframes anim-module-in {
+  from { opacity: 0; transform: translateX(18px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes anim-module-out {
+  to { opacity: 0; transform: translateX(-14px); }
+}
+@keyframes anim-content-in {
+  from { opacity: .25; transform: scale(.992); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes anim-item-in {
+  from { opacity: 0; transform: translateX(8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes anim-fields-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes anim-card-rise {
+  from { opacity: 0; transform: translateY(9px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes anim-overlay-in { from { opacity: 0; } }
+@keyframes anim-overlay-out { to { opacity: 0; } }
+@keyframes anim-modal-box-in {
+  from { opacity: 0; transform: translateY(12px) scale(.975); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes anim-modal-box-out {
+  to { opacity: 0; transform: translateY(7px) scale(.985); }
+}
+@keyframes anim-icon-pop { 50% { transform: scale(1.17); } }
+@keyframes anim-selected-pop { 50% { transform: scale(1.16); } }
+@keyframes anim-ripple { to { opacity: 0; transform: translate(-50%, -50%) scale(18); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* Previne o vazamento horizontal e vertical durante as animações de módulo (mobile e web) */
+body, .app {
+    overflow-x: hidden;
+    position: relative; /* Mantém as animações absolute restritas a este contêiner */
+}
+
+/* Opcional: Garante que as páginas não quebrem o layout ao sair */
+.anim-module-out {
+    overflow: hidden !important; 
+    max-width: 100vw !important; /* Limita a largura estritamente à tela visível */
+}

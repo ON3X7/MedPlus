@@ -5,6 +5,7 @@
 	include "../config/config.php"; //caminhos
 	include $GLOBALS['caminho']['bibliotecas'].'lib1.php'; // biblioteca principal v1
 	include $GLOBALS['caminho']['dao'].'usuarioDao.php'; // dao dos usuarios
+	include $GLOBALS['caminho']['dao'].'agendaDao.php'; // dao da agenda
 	
 	Session::start();
 
@@ -33,7 +34,7 @@
 			if (Session::checar()) { // sessao persistente ou temporaria setada
 			
 				if (Session::validar()) { // validar sessao(oes)
-					$this->menu();
+					$this->TelaMenu();
 				 
 				} else { // sessao expirada, exibir aviso e pedir para relogar
 					$alerta = new ObjetoAlerta();
@@ -67,7 +68,7 @@
 			
 			if (count($retorno) !== 0) {
 				Session::contruirSessao($this->campos);
-				$this->menu();
+				$this->TelaMenu();
 				
 			} else {
 				$alerta = new ObjetoAlerta();
@@ -106,12 +107,13 @@
 			
 			$this->campos['lembrar'] = false; // desativa o lembre-me para o primeiro acesso
 			Session::contruirSessao($this->campos);
-			$this->menu();
+			$this->TelaMenu();
 		}
 		
 		// menu principal da aplicacao, basicamente apenas controi ele e salva ultimo acesso
-		function menu() {
-			echo "Parabéns, você logou.";
+		function TelaMenu() {
+			$oCorpo = new ObjetoHtml($this->caminho, 'menu.html');
+			$oCorpo->imprimir();
 		}
 		
 		// sai da aplicacao limpando a sessao
@@ -194,6 +196,85 @@
 			} else {
 				echo json_encode(array('status' => false, 'mensagem' => 'Falha ao decodificar dados do Google.'));
 			}
+		}
+		
+		// AREA DE MODULO AGENDA
+		function recuperarEventos() {
+			// Garante que o usuário está logado
+			if (!isset($_SESSION['user']['id'])) {
+				echo json_encode(array('status' => false, 'mensagem' => 'Acesso negado.'));
+				return;
+			}
+			
+			$id_usuario = $_SESSION['user']['id'];
+			$data_inicio = $this->campos['data_inicio'] ?? date('Y-m-01');
+			$data_fim = $this->campos['data_fim'] ?? date('Y-m-t');
+			
+			$oAgda = new agendaDAO();
+			$resultados = $oAgda->listarEventosPeriodo($id_usuario, $data_inicio, $data_fim);
+			
+			echo json_encode(array('status' => true, 'dados' => $resultados));
+		}
+		
+		function cadastrarCompromisso() {
+			if (!isset($_SESSION['user']['id'])) {
+				echo json_encode(array('status' => false, 'mensagem' => 'Acesso negado.'));
+				return;
+			}
+
+			$oAgda = new agendaDAO();
+			$sucesso = false;
+
+			// Como o ObjetoConstrutor já converteu $_POST em $this->campos, usamos diretamente
+			if ($this->campos['tipo_cadastro'] === 'plantao') {
+				$sucesso = $oAgda->inserirPlantao($this->campos, $_SESSION['user']['id']);
+			} else {
+				$sucesso = $oAgda->inserirEvento($this->campos, $_SESSION['user']['id']);
+			}
+
+			if ($sucesso) {
+				echo json_encode(array('status' => true));
+			} else {
+				echo json_encode(array('status' => false, 'mensagem' => 'Ocorreu um erro no banco de dados.'));
+			}
+		}
+		
+		function editarCompromisso() {
+			if (!isset($_SESSION['user']['id'])) return;
+			$oAgda = new agendaDAO();
+			
+			if ($this->campos['tipo_cadastro'] === 'plantao') {
+				$sucesso = $oAgda->atualizarPlantao($this->campos, $_SESSION['user']['id']);
+			} else {
+				$sucesso = $oAgda->atualizarEvento($this->campos, $_SESSION['user']['id']);
+			}
+			
+			echo json_encode(array('status' => $sucesso !== false));
+		}
+
+		function marcarRecebido() {
+			if (!isset($_SESSION['user']['id']) || empty($this->campos['id_pagamento'])) return;
+			
+			$oAgda = new agendaDAO();
+			$sucesso = $oAgda->alterarStatusRecebimento($this->campos['id_pagamento'], $_SESSION['user']['id']);
+			
+			echo json_encode(array('status' => $sucesso !== false));
+		}
+		
+		function excluirCompromisso() {
+			if (!isset($_SESSION['user']['id']) || empty($this->campos['id'])) return;
+			$oAgda = new agendaDAO();
+			
+			$excluir_todos = isset($this->campos['excluir_todos']) && $this->campos['excluir_todos'] === 'sim';
+			
+			if ($this->campos['tipo_cadastro'] === 'plantao') {
+				$id_pagamento = $this->campos['id_pagamento'] ?? null;
+				$sucesso = $oAgda->excluirPlantao($this->campos['id'], $id_pagamento, $_SESSION['user']['id'], $excluir_todos);
+			} else {
+				$sucesso = $oAgda->excluirEvento($this->campos['id'], $_SESSION['user']['id'], $excluir_todos); // Adapte o excluirEvento se quiser repetir Eventos normais
+			}
+			
+			echo json_encode(array('status' => $sucesso !== false));
 		}
 	}
 	

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <title>Med+ | Menu</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/w3.css">
+    <link rel="stylesheet" href="/css/menu.css">
+    <link rel="stylesheet" href="/css/agenda.css">
+    <link rel="stylesheet" href="/css/notification.css">
+    <link rel="stylesheet" href="/css/animations.css">
+    <link rel="stylesheet" href="/css/fontawesome-free-7.2.0-web/css/all.min.css">
+	<link rel="icon" type="image/x-icon" href="/img/iconApp_192x192.png">
+    <script src="/js/ajax.js"></script>
+    <script src="/js/utilitarios.js"></script>
+    <script src="/js/notification.js"></script>
+    <script src="/js/animations.js"></script>
+</head>
+<body>
+	  <div class="app">
+		<aside class="sidebar w3-sidebar">
+		  <div class="brand"><b><i class="fa-solid fa-heart-pulse"></i></b>&nbsp;Med<span>+</span></div>
+		  <nav class="w3-bar-block" aria-label="Menu principal">
+			<button class="w3-bar-item w3-button menu-item" data-module="Início"><i class="fa-solid fa-house"></i>&emsp;<span>Início</span></button>
+			<button class="w3-bar-item w3-button menu-item" data-module="Agenda"><i class="fa-solid fa-calendar-days"></i>&emsp;<span>Agenda</span></button>
+			<button class="w3-bar-item w3-button menu-item" data-module="Financeiro"><i class="fa-solid fa-wallet"></i>&emsp;<span>Financeiro</span></button>
+			<button class="w3-bar-item w3-button menu-item" data-module="Investimentos"><i class="fa-solid fa-chart-line"></i>&emsp;<span>Investimentos</span></button>
+			<button class="w3-bar-item w3-button menu-item" data-module="Metas"><i class="fa-solid fa-bullseye"></i>&emsp;<span>Metas</span></button>
+			<button class="w3-bar-item w3-button menu-item" data-module="Ajustes"><i class="fa-solid fa-sliders"></i>&emsp;<span>Ajustes</span></button>
+		  </nav>
+		  <div class="premium"><i class="fa-regular fa-gem"></i><div><strong>Plano Premium</strong><small>Ver benefícios</small></div><i class="fa-solid fa-chevron-right"></i></div>
+		</aside>
+
+		<main>
+		  <header class="topbar w3-white">
+			<div class="mobile-brand">Med<span>+</span></div>
+			<label class="search"><i class="fa-solid fa-magnifying-glass"></i><input placeholder="Buscar no Med+"></label>
+			<div class="user-actions">
+			  <button aria-label="Notificações"><i class="fa-regular fa-bell"></i><em></em></button>
+			  <button aria-label="Ajuda"><i class="fa-regular fa-circle-question"></i></button>
+			  <div class="profile"><b>CS</b><div><strong>Dra. Camila Santos</strong><small>Pediatra</small></div><i class="fa-solid fa-chevron-down"></i></div>
+			</div>
+		  </header>
+
+          <!-- PÁGINA: INÍCIO -->
+          <div class="content w3-container module-page" id="pag-inicio" style="display: none;">
+            <section class="heading">
+                <div><small>BEM-VINDO AO MED+</small><h1>Visão Geral</h1><p>Resumo rápido das suas atividades.</p></div>
+            </section>
+            <div style="height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #aab9c4; text-align: center;">
+                <i class="fa-solid fa-house" style="font-size: 3rem; margin-bottom: 15px; color: #e1e8eb;"></i>
+                <p>Módulo Início em construção.</p>
+            </div>
+          </div>
+
+          <!-- PÁGINA: AGENDA -->
+		  <div class="content w3-container module-page" id="pag-agenda" style="display: none;">
+			<section class="heading">
+			  <div><small>ORGANIZE O SEU DIA</small><h1>Minha agenda</h1><p>Acompanhe consultas, plantões e compromissos.</p></div>
+			  <button class="primary w3-button" id="new-event"><i class="fa-solid fa-plus"></i> <span>Novo compromisso</span></button>
+			</section>
+
+			<section class="summaries">
+			  <article class="w3-card"><b class="teal"><i class="fa-regular fa-calendar-check"></i></b><div><strong>00</strong><small>Compromissos no mês</small></div></article>
+			  <article class="w3-card"><b class="blue"><i class="fa-solid fa-stethoscope"></i></b><div><strong>00</strong><small>Consultas agendadas</small></div></article>
+			  <article class="w3-card"><b class="orange"><i class="fa-regular fa-clock"></i></b><div><strong>00</strong><small>Próximos 7 dias</small></div></article>
+			</section>
+
+			<div class="agenda">
+			  <section class="calendar w3-card">
+				<header>
+				  <div class="month"><button><i class="fa-solid fa-chevron-left"></i></button><h2><span></span></h2><button><i class="fa-solid fa-chevron-right"></i></button></div>
+				  <div class="views"><button>Dia</button><button>Semana</button><button class="active">Mês</button></div>
+				</header>
+				<div class="calendar-grid" id="calendar"></div>
+			  </section>
+
+			  <aside class="day-panel w3-card">
+				<header><div><small>DATA SELECIONADA</small><h2><span id="selected-day"></span></h2></div><button><i class="fa-solid fa-ellipsis"></i></button></header>
+				<div class="stats"><span><b id="event-count">0</b> compromisso(s)</span></div>
+				<div class="appointments" id="appointments"></div>
+			  </aside>
+			</div>
+			
+			<!-- MODAL: CADASTRO -->
+			<div id="modal-cadastro" class="w3-modal custom-modal-overlay" style="padding-top: 5vh;">
+				<div class="w3-modal-content w3-animate-zoom custom-modal-box">
+					<header class="modal-header">
+						<h3><i class="fa-regular fa-calendar-plus"></i> Novo Compromisso</h3>
+						<button onclick="fecharModal('modal-cadastro')" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+					</header>
+					
+					<div class="modal-body">
+						<div class="modal-tabs">
+							<button class="tab-btn active" id="tab-evento" onclick="alternarTipoCadastro('evento')">Evento Pessoal</button>
+							<button class="tab-btn" id="tab-plantao" onclick="alternarTipoCadastro('plantao')">Plantão Médico</button>
+						</div>
+
+						<form id="form-compromisso" name="form-compromisso" method="POST" action="">
+							<input type="hidden" id="cad-id" value="">
+							<input type="hidden" id="cad-id-pagamento" value="">
+							
+							<div class="input-group">
+								<label for="cad-nome">Título do Compromisso</label>
+								<input type="text" id="cad-nome" placeholder="Ex: Reunião Clínica, Plantão UTI..." required>
+							</div>
+
+							<div class="w3-row">
+								<div class="input-group w3-left w3-mobile" style="width:49%;">
+									<label for="cad-inicio">Data/Hora Início</label>
+									<input type="datetime-local" id="cad-inicio" required>
+								</div>
+								<div class="input-group w3-right w3-mobile" style="width:49%;">
+									<label for="cad-fim">Data/Hora Fim</label>
+									<input type="datetime-local" id="cad-fim" required>
+								</div>
+							</div>
+
+							<div id="fields-evento" class="dynamic-fields">
+								<div class="input-group">
+									<label for="cad-tipo-evento">Tipo de Evento</label>
+									<select id="cad-tipo-evento">
+										<option value="1">Consulta</option>
+										<option value="2">Reunião</option>
+										<option value="3">Pessoal (Relaxante)</option>
+									</select>
+								</div>
+							</div>
+
+							<div id="fields-plantao" class="dynamic-fields" style="display: none;">
+								<div class="input-group">
+									<label for="cad-hospital">Hospital / Local</label>
+									<input type="text" id="cad-hospital" placeholder="Nome do Hospital ou Clínica">
+								</div>
+								<div class="input-group">
+									<label>Valor do Pagamento (R$)</label>
+									<input type="text" inputmode="numeric" id="cad-pagamento" placeholder="0,00">
+								</div>
+								<div class="input-group">
+									<label for="cad-prevista">Data Pagamento</label>
+									<input type="datetime-local" id="cad-prevista" required>
+								</div>
+								
+								<div class="repeticao-box">
+									<label class="checkbox-container" for="cad-repetir">
+										<input type="checkbox" id="cad-repetir" onchange="toggleRepeticao(this)">
+										<span>Tornar este plantão repetível</span>
+									</label>
+									<div id="opcoes-repeticao" style="display: none; margin-top: 10px;">
+										<div class="w3-row">
+											<div class="input-group w3-left w3-mobile" style="width:49%;">
+												<label for="cad-periodo">Período</label>
+												<select id="cad-periodo">
+													<option value="semanal">Semanal</option>
+													<option value="quinzenal">Quinzenal</option>
+													<option value="mensal">Mensal</option>
+												</select>
+											</div>
+											<div class="input-group w3-right w3-mobile" style="width:49%;">
+                                                <label>Quantidade de Vezes</label>
+                                                <div style="display:flex; align-items:center; gap:10px;">
+                                                    <input type="number" id="cad-quantidade" min="1" placeholder="Ex: 4" style="width:50%;">
+                                                    <label class="checkbox-container" style="margin:0; font-size:10px;">
+                                                        <input type="checkbox" id="cad-indefinido" onchange="toggleIndefinido(this)">
+                                                        <span>Indefinidamente</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="w3-row">
+								<div class="input-group w3-left w3-mobile" style="width:49%;">
+									<label for="cad-cor">Cor de Destaque</label>
+									<input type="color" id="cad-cor" class="custom-color-input" value="#0da99a" title="Escolha a cor do compromisso">
+								</div>
+								<div class="input-group w3-right w3-mobile" style="width:49%;">
+									<label for="cad-icone">Ícone de Destaque</label>
+									<select id="cad-icone">
+										<option value="fa-solid fa-stethoscope">🩺 Estetoscópio</option>
+										<option value="fa-solid fa-user-doctor">👨‍⚕️ Médico / Plantão</option>
+										<option value="fa-solid fa-hospital">🏥 Hospital / Clínica</option>
+										<option value="fa-solid fa-video">📹 Teleconsulta</option>
+										<option value="fa-solid fa-user">👤 Paciente</option>
+										<option value="fa-solid fa-briefcase-medical">💼 Maleta Médica</option>
+										<option value="fa-solid fa-notes-medical">📋 Prontuário</option>
+										<option value="fa-solid fa-heart-pulse">💓 Exame / Procedimento</option>
+										<option value="fa-solid fa-mug-hot">☕ Pausa / Pessoal</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="input-group">
+								<label for="cad-observacao">Observações</label>
+								<textarea id="cad-observacao" rows="2" placeholder="Notas adicionais..."></textarea>
+							</div>
+						</form>
+					</div>					
+					<footer class="modal-footer">
+						<button class="btn-outline" onclick="fecharModal('modal-cadastro')">Cancelar</button>
+						<button class="btn-primary" onclick="salvarCompromisso()"><i class="fa-solid fa-check"></i> Salvar</button>
+					</footer>
+				</div>
+			</div>
+
+			<!-- MODAL: VIEW -->
+			<div id="modal-view" class="w3-modal custom-modal-overlay">
+				<div class="w3-modal-content w3-animate-zoom custom-modal-box view-mode">
+					<header class="modal-header">
+						<div class="view-title">
+							<div class="icon-box teal" id="view-icon-box"><i class="fa-solid fa-stethoscope" id="view-icon"></i></div>
+							<div>
+								<h3 id="view-nome">Título do Evento</h3>
+								<small id="view-tipo">Tipo do Evento</small>
+							</div>
+						</div>
+						<button onclick="fecharModal('modal-view')" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+					</header>
+					
+					<div class="modal-body">
+						<div class="info-list">
+							<div class="info-item">
+								<i class="fa-regular fa-clock"></i>
+								<div>
+									<small>Horário</small>
+									<strong id="view-horario">08:00 - 10:00</strong>
+								</div>
+							</div>
+							
+							<div class="info-item" id="view-plantao-info" style="display: none;">
+								<i class="fa-regular fa-building"></i>
+								<div>
+									<small>Hospital / Local</small>
+									<strong id="view-hospital">Hospital São Lucas</strong>
+								</div>
+							</div>
+							<div class="info-item" id="view-pagamento-info" style="display: none;">
+								<i class="fa-solid fa-sack-dollar"></i>
+								<div>
+									<small>Pagamento Previsto</small>
+									<strong id="view-pagamento">R$ 1.200,00</strong>
+								</div>
+							</div>
+
+							<div class="info-item">
+								<i class="fa-regular fa-comment-dots"></i>
+								<div>
+									<small>Observações</small>
+									<p id="view-observacao">Nenhuma observação.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<footer class="modal-footer flex-between">
+						<button class="btn-danger" onclick="excluirCompromisso()"><i class="fa-regular fa-trash-can"></i> Excluir</button>
+						<div style="display:flex; gap:10px;">
+							<button id="btn-receber" class="btn-outline" style="color:#0da99a; border-color:#0da99a; display:none;" onclick="marcarRecebido()"><i class="fa-solid fa-check-double"></i> <span>Receber</span></button>
+							<button class="btn-outline" onclick="fecharModal('modal-view')"><i class="fa-solid fa-times"></i> Fechar</button>
+							<button class="btn-primary" onclick="abrirEdicao()"><i class="fa-solid fa-pen"></i> Editar</button>
+						</div>
+					</footer>
+				</div>
+			</div>
+		  </div>
+
+          <!-- PÁGINA: FINANCEIRO -->
+          <div class="content w3-container module-page" id="pag-financeiro" style="display: none;">
+            <section class="heading">
+                <div><small>FLUXO DE CAIXA</small><h1>Financeiro</h1><p>Controle suas receitas e despesas.</p></div>
+            </section>
+            <div style="height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #aab9c4; text-align: center;">
+                <i class="fa-solid fa-wallet" style="font-size: 3rem; margin-bottom: 15px; color: #e1e8eb;"></i>
+                <p>Módulo Financeiro em construção.</p>
+            </div>
+          </div>
+
+          <!-- PÁGINA: INVESTIMENTOS -->
+          <div class="content w3-container module-page" id="pag-investimentos" style="display: none;">
+            <section class="heading">
+                <div><small>PATRIMÔNIO</small><h1>Investimentos</h1><p>Acompanhe a sua carteira e rendimentos.</p></div>
+            </section>
+            <div style="height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #aab9c4; text-align: center;">
+                <i class="fa-solid fa-chart-line" style="font-size: 3rem; margin-bottom: 15px; color: #e1e8eb;"></i>
+                <p>Módulo de Investimentos em construção.</p>
+            </div>
+          </div>
+
+          <!-- PÁGINA: METAS -->
+          <div class="content w3-container module-page" id="pag-metas" style="display: none;">
+            <section class="heading">
+                <div><small>OBJETIVOS</small><h1>Metas</h1><p>Acompanhe a progressão dos seus sonhos.</p></div>
+            </section>
+            <div style="height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #aab9c4; text-align: center;">
+                <i class="fa-solid fa-bullseye" style="font-size: 3rem; margin-bottom: 15px; color: #e1e8eb;"></i>
+                <p>Módulo de Metas em construção.</p>
+            </div>
+          </div>
+
+          <!-- PÁGINA: AJUSTES -->
+          <div class="content w3-container module-page" id="pag-ajustes" style="display: none;">
+            <section class="heading">
+                <div><small>CONFIGURAÇÕES</small><h1>Ajustes</h1><p>Preferências da conta e sistema.</p></div>
+            </section>
+            <div style="height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #aab9c4; text-align: center;">
+                <i class="fa-solid fa-sliders" style="font-size: 3rem; margin-bottom: 15px; color: #e1e8eb;"></i>
+                <p>Módulo de Ajustes em construção.</p>
+            </div>
+          </div>
+
+		</main>
+
+		<nav class="mobile-nav w3-bar w3-white">
+		  <button class="w3-bar-item menu-item" data-module="Início"><i class="fa-solid fa-house"></i><br><span>Início</span></button>
+		  <button class="w3-bar-item menu-item" data-module="Agenda"><i class="fa-solid fa-calendar-days"></i><br><span>Agenda</span></button>
+		  <button class="w3-bar-item menu-item" data-module="Financeiro"><i class="fa-solid fa-wallet"></i><br><span>Financeiro</span></button>
+		  <button class="w3-bar-item menu-item" data-module="Investimentos"><i class="fa-solid fa-chart-line"></i><br><span>Investir</span></button>
+		  <button class="w3-bar-item menu-item" data-module="Metas"><i class="fa-solid fa-bullseye"></i><br><span>Metas</span></button>
+		</nav>
+		<div class="toast" id="toast" hidden></div>
+	  </div>
+	  <script src="/js/agenda.js"></script>
+</body>
+</html>
