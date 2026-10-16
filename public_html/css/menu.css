@@ -140,3 +140,46 @@ main { min-height: 100vh; margin-left: 224px; }
     .mobile-nav button.active { color: #0b9f92; }
     .toast { right: 15px; bottom: 78px; left: 15px; text-align: center; }
 }
+
+/* =========================================
+   BARRA DE CARREGAMENTO GLOBAL (AJAX)
+========================================= */
+.global-ajax-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: transparent;
+    z-index: 99999; /* Fica acima de modais e menus */
+    pointer-events: none; /* Não bloqueia cliques na tela */
+}
+
+/* O elemento pseudo ::before cria a barrinha que se move */
+.global-ajax-loader::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #0da99a; /* Cor primária do Med+ */
+    width: 30%;
+    animation: ajax-loader-anim 1.5s infinite ease-in-out;
+    border-radius: 0 3px 3px 0;
+    box-shadow: 0 0 8px rgba(13, 169, 154, 0.6); /* Brilho sutil */
+}
+
+/* Animação infinita de "vai e vem" (Indeterminate Loader) */
+@keyframes ajax-loader-anim {
+    0% {
+        left: -30%;
+        width: 30%;
+    }
+    50% {
+        width: 50%;
+    }
+    100% {
+        left: 100%;
+        width: 30%;
+    }
+}
