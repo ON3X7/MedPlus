@@ -76,7 +76,7 @@ input, textarea, select {
 .sidebar { position: fixed; inset: 0 auto 0 0; z-index: 20; width: 224px; padding: 25px 14px 18px; display: flex; flex-direction: column; color: #dbe6ed; background: #061c2c; }
 .brand { padding: 0 10px 30px; display: flex; align-items: center; color: white; font-size: 21px; font-weight: 700; }
 .brand > span, .mobile-brand span { color: #12b8a7; }
-.brand > b { width: 31px; height: 31px; display: grid; place-items: center; border: 1.5px solid #14b8a6; border-radius: 10px; color: #14b8a6; font-size: 16px; }
+.brand > b { width: 31px; height: 31px; display: grid; place-items: center; border-radius: 10px; color: #14b8a6; font-size: 16px; }
 
 .sidebar nav { display: flex; flex-direction: column; gap: 5px; }
 .sidebar nav button { width: 100%; padding: 11px 13px; display: flex; align-items: center; gap: 13px; border: 0; border-radius: 8px; color: #aab9c4; background: transparent; font-size: 13px; text-align: left; transition: 160ms ease; }
