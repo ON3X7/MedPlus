@@ -451,10 +451,14 @@ function abrirEdicao() {
 
 function salvarCompromisso() {
 	const titulo = document.getElementById('cad-nome').value;
+	const inicio = document.getElementById('cad-inicio').value
+	const fim = document.getElementById('cad-fim').value
     const isPlantao = document.getElementById('tab-plantao').classList.contains('active');
     const idAtual = document.getElementById('cad-id').value;
 
 	if (!titulo) { showNotification('error', 'O título é obrigatório.'); return; }
+	if (!inicio) { showNotification('error', 'A data de início é obrigatório.'); return; }
+	if (!fim) { showNotification('error', 'A data de fim é obrigatório.'); return; }
 
     let ajax = new CustomAjax(true);
     ajax.add("acao", idAtual ? "editarCompromisso" : "cadastrarCompromisso");
@@ -465,8 +469,8 @@ function salvarCompromisso() {
     
     ajax.add("tipo_cadastro", isPlantao ? "plantao" : "evento");
     ajax.add("nome", titulo);
-    ajax.add("data_inicio", document.getElementById('cad-inicio').value);
-    ajax.add("data_fim", document.getElementById('cad-fim').value);
+    ajax.add("data_inicio", inicio);
+    ajax.add("data_fim", fim);
     ajax.add("cor", document.getElementById('cad-cor').value);
     ajax.add("icone", document.getElementById('cad-icone').value);
     ajax.add("observacao", document.getElementById('cad-observacao').value);
