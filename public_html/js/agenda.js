@@ -270,6 +270,12 @@ document.querySelectorAll(".views button").forEach(button => button.addEventList
 	renderCalendar();
 }));
 
+// Ação: Recolher/Expandir o painel do dia ao clicar nos "..."
+document.querySelector(".day-panel > header button").addEventListener("click", () => {
+    const painel = document.querySelector(".day-panel");
+    painel.classList.toggle("collapsed");
+});
+
 // --- REQUISIÇÃO AJAX (PHP) ---
 function buscarEventosNoServidor(tipoVisao, dataInicio, dataFim) {
 	let ajax = new CustomAjax(true);

@@ -60,6 +60,42 @@
 .day-panel > header small { color: #0ba697; font-size: 8px; font-weight: 700; letter-spacing: .1em; }
 .day-panel > header h2 { margin: 4px 0 0; font-size: 18px; }
 
+/* =========================================
+   COMPORTAMENTO DE RECOLHER ABA LATERAL
+========================================= */
+.day-panel {
+    transition: all 0.3s ease; 
+}
+
+/* 1. Prepara as divs internas para a animação (ao invés de display: none) */
+.stats, .appointments {
+    transition: max-height 0.3s ease, min-height 0.3s ease, padding 0.3s ease, opacity 0.2s ease, border-color 0.3s ease;
+    max-height: 1000px; /* Altura limite segura para o conteúdo expandido */
+    overflow: hidden;   /* Impede que o conteúdo vaze enquanto encolhe */
+}
+
+/* 2. Zera as medidas suavemente quando a classe collapsed é ativada */
+.day-panel.collapsed .stats,
+.day-panel.collapsed .appointments {
+    max-height: 0;
+    min-height: 0; /* Anula o min-height: 220px original do .appointments */
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+    border-color: transparent; /* Oculta a linha divisória do .stats */
+}
+
+/* Remove o padding extra para a aba ficar bem pequena */
+.day-panel.collapsed {
+    padding-bottom: 0;
+}
+
+/* Efeito visual extra: o botão fica levemente destacado quando a aba está fechada */
+.day-panel.collapsed > header button {
+    background-color: #f0f5f7;
+    color: #12b8a7;
+}
+
 .stats { padding: 10px 18px; display: flex; justify-content: space-between; border-block: 1px solid #edf1f3; color: #7c8b96; background: #fafcfc; font-size: 8px; }
 .stats b { color: #263d4e; }
 
