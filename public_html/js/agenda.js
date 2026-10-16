@@ -341,9 +341,20 @@ function preencherEventosNoGrid() {
             }).join("");
 		}
 		
-		let indicadorMobile = btnDia.querySelector('i');
+		// CORREÇÃO: Busca especificamente pela classe do pontinho, ignorando os ícones do Font Awesome
+		let indicadorMobile = btnDia.querySelector('.dot-indicador');
+		
 		if (items.length > 0) {
-			if (!indicadorMobile) btnDia.insertAdjacentHTML('beforeend', '<i></i>');
+            // Pega a cor do primeiro compromisso do dia para o pontinho
+            const corPonto = items[0].tone || "#0da99a";
+
+			if (!indicadorMobile) {
+                // Injeta a tag com a classe correta e a cor dinâmica
+				btnDia.insertAdjacentHTML('beforeend', `<i class="dot-indicador" style="background-color: ${corPonto};"></i>`);
+			} else {
+                // Atualiza a cor se o dia mudar
+                indicadorMobile.style.backgroundColor = corPonto;
+            }
 		} else {
 			if (indicadorMobile) indicadorMobile.remove();
 		}
