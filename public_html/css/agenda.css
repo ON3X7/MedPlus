@@ -250,3 +250,35 @@ html.modal-open, html.modal-open body { overflow: hidden; }
     .date > span { margin: auto; }
     .date > i { position: absolute; left: 50%; bottom: 7px; width: 4px; height: 4px; display: block; border-radius: 50%; background: #0da99a; transform: translateX(-50%); }
 }
+
+/* =========================================
+   PULL TO REFRESH (PUXAR PARA ATUALIZAR)
+========================================= */
+.pull-to-refresh {
+    position: fixed;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 42px;
+    height: 42px;
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    color: #0da99a;
+    font-size: 18px;
+    pointer-events: none; /* Para não interferir nos cliques */
+}
+
+/* Rotação infinita durante a atualização */
+.pull-to-refresh.refreshing i {
+    animation: ptr-spin 0.8s linear infinite;
+}
+
+@keyframes ptr-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

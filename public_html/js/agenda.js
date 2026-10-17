@@ -665,3 +665,90 @@ document.getElementById('cad-pagamento').addEventListener('input', function(e) {
     
     e.target.value = valor;
 });
+
+
+// ==========================================
+//   PULL TO REFRESH & OVERSCROLL
+// ==========================================
+(function() {
+    const ptrElement = document.createElement('div');
+    ptrElement.className = 'pull-to-refresh';
+    ptrElement.innerHTML = '<i class="fa-solid fa-rotate-right"></i>';
+    document.body.appendChild(ptrElement);
+
+    const paginaAgenda = document.getElementById('pag-agenda');
+    let startY = 0;
+    let currentY = 0;
+    let isPulling = false;
+    let isRefreshing = false; // Trava de segurança para não disparar várias vezes
+
+    const threshold = 110; // Distância do puxão manual
+    const scrollThreshold = -70; // Ponto de gatilho do scroll negativo (overscroll)
+
+    // Função central que executa a atualização
+    function executarRefresh() {
+        if (isRefreshing) return;
+        isRefreshing = true;
+
+        ptrElement.classList.add('refreshing');
+        ptrElement.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
+        ptrElement.style.transform = `translate(-50%, 65px)`; 
+        
+        // Dispara a requisição para o servidor
+        const dataInicialStr = formatarDataSTR(new Date(displayedDate.getFullYear(), displayedDate.getMonth(), 1));
+        const dataFinalStr = formatarDataSTR(new Date(displayedDate.getFullYear(), displayedDate.getMonth() + 1, 0));
+        buscarEventosNoServidor(currentView, dataInicialStr, dataFinalStr);
+        
+        // Finaliza a animação e reseta o estado após 1 segundo
+        setTimeout(() => {
+            ptrElement.classList.remove('refreshing');
+            ptrElement.style.transform = `translate(-50%, 0)`;
+            ptrElement.querySelector('i').style.transform = `rotate(0deg)`;
+            
+            setTimeout(() => { isRefreshing = false; }, 300); // Delay extra para a div subir antes de liberar
+        }, 1000);
+    }
+
+    // 1. LEITURA DE OVERSCROLL (Scroll Negativo)
+    window.addEventListener('scroll', () => {
+        if (window.scrollY <= scrollThreshold && !isRefreshing) {
+            executarRefresh();
+        }
+    }, { passive: true });
+
+    // 2. LEITURA DO PUXÃO MANUAL (Dispositivos sem overscroll elástico)
+    paginaAgenda.addEventListener('touchstart', (e) => {
+        if (isRefreshing) return;
+        if (window.scrollY === 0 || document.documentElement.scrollTop === 0) {
+            startY = e.touches[0].screenY;
+            isPulling = true;
+            ptrElement.style.transition = 'transform 0s'; 
+        }
+    }, { passive: true });
+
+    paginaAgenda.addEventListener('touchmove', (e) => {
+        if (!isPulling || isRefreshing) return;
+        currentY = e.touches[0].screenY;
+        let distance = currentY - startY;
+
+        if (distance > 0 && (window.scrollY === 0 || document.documentElement.scrollTop === 0)) {
+            let pullDistance = Math.min(distance * 0.4, 90); 
+            ptrElement.style.transform = `translate(-50%, ${pullDistance}px)`;
+            ptrElement.querySelector('i').style.transform = `rotate(${pullDistance * 3}deg)`;
+        }
+    }, { passive: true });
+
+    paginaAgenda.addEventListener('touchend', () => {
+        if (!isPulling || isRefreshing) return;
+        isPulling = false;
+        let distance = currentY - startY;
+
+        if (distance > threshold) {
+            executarRefresh();
+        } else {
+            ptrElement.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
+            ptrElement.style.transform = `translate(-50%, 0)`;
+            ptrElement.querySelector('i').style.transform = `rotate(0deg)`;
+        }
+    });
+})();
