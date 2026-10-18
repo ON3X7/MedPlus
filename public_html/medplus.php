@@ -1,6 +1,6 @@
 <?php
 	header('Cross-Origin-Opener-Policy: same-origin-allow-popups');
-	// Copyright (c) 2026 Walleson Douglas. Todos os direitos reservados.
+	// Copyright (c) 2026 Walleson Oliveira. Todos os direitos reservados.
 	
 	include "../config/config.php"; //caminhos
 	include $GLOBALS['caminho']['bibliotecas'].'lib1.php'; // biblioteca principal v1

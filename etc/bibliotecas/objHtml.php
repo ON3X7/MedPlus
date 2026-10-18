@@ -1,5 +1,5 @@
 <?php
-	// Copyright (c) 2026 Walleson Douglas. Todos os direitos reservados.
+	// Copyright (c) 2026 Walleson Oliveira. Todos os direitos reservados.
 	class ObjetoHtml {
 		//esse arquivo é um objeto para imprimir um html
 		var $caminho = '/';

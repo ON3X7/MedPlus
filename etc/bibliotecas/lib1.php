@@ -1,5 +1,5 @@
 <?php
-	// Copyright (c) 2026 Walleson Douglas. Todos os direitos reservados.
+	// Copyright (c) 2026 Walleson Oliveira. Todos os direitos reservados.
 	include_once "../etc/bibliotecas/objConexao.php"; // conexao ao banco de dados
 	include_once "../etc/bibliotecas/objConstrutor.php"; // construcao de telas com funcoes padrao - utiliza objHtml
 	include_once "../etc/bibliotecas/objHtml.php"; // controi o html e imprimi sem funcoes extras
