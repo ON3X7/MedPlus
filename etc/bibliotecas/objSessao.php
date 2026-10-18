@@ -17,10 +17,10 @@
 		// constroi sessao, recebe parametro opcional via_google para bypassar senha
 		public static function contruirSessao($campos, $via_google = false)
 		{
-			self::novaSessao($campos, $via_google); // cria sessao de navegador[cite: 10]
+			self::novaSessao($campos, $via_google); // cria sessao de navegador
 			
 			if ($campos['lembrar'] === "sim") {
-				self::novoToken(); // cria um token de acesso de 30 dias[cite: 10]
+				self::novoToken(); // cria um token de acesso de 30 dias
 			}
 		}
 
@@ -29,7 +29,7 @@
 			$db = new Query();
 
 			if ($via_google) {
-				// Query EXCLUSIVA para Google: Ignora a senha, checa apenas o email[cite: 10]
+				// Query EXCLUSIVA para Google: Ignora a senha, checa apenas o email
 				$params = array ($campos['email']);
 				
 				$_SESSION['user'] = $db->adicionar("SELECT id, nome, email, data_nascimento, sexo, imagem, via_google, ultimo_acesso")
@@ -37,7 +37,7 @@
 									   ->realizarQuery($params)
 									   ->recuperar();
 			} else {
-				// Query PADRÃO: Exige email e senha[cite: 10]
+				// Query PADRÃO: Exige email e senha
 				$params = array (
 					$campos['email'],
 					hash('sha256', $campos['senha'])
