@@ -113,6 +113,30 @@
 		// menu principal da aplicacao, basicamente apenas controi ele e salva ultimo acesso
 		function TelaMenu() {
 			$oCorpo = new ObjetoHtml($this->caminho, 'menu.html');
+			
+			// Puxa os dados da sessão
+			$nome = $_SESSION['user']['nome'] ?? 'Convidado';
+			$email = $_SESSION['user']['email'] ?? 'Usuário convidado';
+			$imagem = $_SESSION['user']['imagem'] ?? '';
+			
+			// Se o utilizador tiver foto do Google, cria a tag <img>, senão, cria o ícone de iniciais
+			if (!empty($imagem)) {
+				// Adicionamos referrerpolicy para evitar bloqueios do Google em imagens cross-origin
+				$fotoHtml = '<img src="' . $imagem . '" alt="Foto de perfil" referrerpolicy="no-referrer">';
+			} else {
+				$arrayNome = explode(" ", $nome);
+				$primeiroNome = $arrayNome[0];
+				$ultimoNome = $arrayNome[count($arrayNome) - 1];
+				$iniciais = strtoupper(substr($primeiroNome, 0, 1) . substr($ultimoNome, 0, 1));
+				$fotoHtml = '<b>' . $iniciais . '</b>';
+			}
+			
+			// Faz as substituições no HTML
+			$oCorpo->conteudo = str_replace('{{FOTO_PERFIL}}', $fotoHtml, $oCorpo->conteudo);
+			$oCorpo->conteudo = str_replace('{{NOME_USUARIO}}', $nome, $oCorpo->conteudo);
+			$oCorpo->conteudo = str_replace('{{EMAIL_USUARIO}}', $email, $oCorpo->conteudo);
+			
+			// Imprime a tela final
 			$oCorpo->imprimir();
 		}
 		
@@ -150,7 +174,7 @@
 		
 		// AREA DE REQUISICAO GOOGLE
 		function loginGoogle() {
-			$token = $_POST['credential'] ?? '';
+			$token = $this->campos['credential'] ?? '';
 			
 			if (empty($token)) {
 				echo json_encode(array('status' => false, 'mensagem' => 'Token ausente.'));
@@ -174,6 +198,7 @@
 			if (isset($payload['email'])) {
 				$this->campos['email'] = $payload['email'];
 				$this->campos['nome'] = $payload['name'];
+				$this->campos['imagem'] = $payload['picture'];
 				$this->campos['lembrar'] = 'sim'; // Para já criar o cookie de 30 dias no login via Google
 				
 				$oUsua = new usuarioDAO();
@@ -186,7 +211,7 @@
 					$oUsua->novoUsuarioGoogle($this->campos);
 				} else {
 					// Conta existente: Atualiza a flag via_google para true, permitindo o login sem senha neste e em futuros acessos via Google
-					$oUsua->ativarViaGoogle($this->campos['email']);
+					$oUsua->ativarViaGoogle($this->campos);
 				}
 				
 				// Constrói a sessão passando o segundo parâmetro como true (bypass de senha)

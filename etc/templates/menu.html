@@ -38,7 +38,48 @@
 			<div class="user-actions">
 			  <button aria-label="Notificações"><i class="fa-regular fa-bell"></i><em></em></button>
 			  <button aria-label="Ajuda"><i class="fa-regular fa-circle-question"></i></button>
-			  <div class="profile"><b>CS</b><div><strong>Dra. Camila Santos</strong><small>Pediatra</small></div><i class="fa-solid fa-chevron-down"></i></div>
+				<div class="profile" onclick="toggleProfileDropdown(event)">
+    
+					<!-- Avatar da barra superior -->
+					<div class="avatar-sm">{{FOTO_PERFIL}}</div>
+					
+					<!-- Info da barra superior (Receberá display: none no mobile) -->
+					<div class="profile-info-top">
+						<strong>{{NOME_USUARIO}}</strong>
+						<small>Plano Free</small>
+					</div>
+					<i class="fa-solid fa-chevron-down drop-icon"></i>
+					
+					<!-- Menu Dropdown Flutuante (Estilo Google) -->
+					<div class="profile-dropdown" id="profileDropdown" onclick="event.stopPropagation()">
+						<div class="dropdown-header-google">
+							<span class="header-label">Conectado como</span>
+							<div class="current-user-info">
+								<!-- Avatar Gigante -->
+								<div class="large-avatar">{{FOTO_PERFIL}}</div>
+								<div class="user-details">
+									<strong>{{NOME_USUARIO}}</strong>
+									<span>Plano Free</span>
+									<small>{{EMAIL_USUARIO}}</small>
+								</div>
+							</div>
+						</div>
+						<div class="dropdown-body-google">
+							<button class="dropdown-btn" onclick="mudarModulo('Ajustes'); document.querySelector('.profile').classList.remove('active');">
+								<i class="fa-solid fa-sliders"></i> Configurações da conta
+							</button>
+						</div>
+						<hr class="dropdown-divider">
+						<div class="dropdown-footer-google">
+							<button class="dropdown-btn text-danger" onclick="formSair.submit();">
+								<i class="fa-solid fa-arrow-right-from-bracket"></i> Sair
+							</button>
+						</div>
+					</div>
+				</div>
+				<form class="w3-hide" id="formSair" name="formSair" method="POST">
+					<input type="hidden" name="acao" value="sair">
+				</form>
 			</div>
 		  </header>
 

@@ -153,3 +153,25 @@
     });
   });
 })();
+
+// ==========================================
+//   CONTROLO DO DROPDOWN DE PERFIL
+// ==========================================
+function toggleProfileDropdown(event) {
+    // Evita que o clique se propague e ative o fechamento automático instantaneamente
+    event.stopPropagation(); 
+    
+    const profile = document.querySelector('.profile');
+    if (profile) {
+        profile.classList.toggle('active');
+    }
+}
+
+// Escuta cliques globais na tela para fechar o menu se clicar fora
+document.addEventListener('click', (event) => {
+    const profile = document.querySelector('.profile');
+    // Verifica se o menu está aberto e se o clique foi fora do contentor .profile
+    if (profile && profile.classList.contains('active') && !profile.contains(event.target)) {
+        profile.classList.remove('active');
+    }
+});
