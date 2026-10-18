@@ -147,6 +147,30 @@ function toggleVisibility(inputId, iconElement) {
     }
 }
 
+// ==========================================
+//   LISTENER PARA A TECLA ENTER
+// ==========================================
+document.addEventListener('keydown', function(event) {
+    // Verifica se a tecla pressionada foi o "Enter"
+    if (event.key === 'Enter') {
+        
+        // Previne o comportamento padrão (evita que o navegador tente enviar o formulário sozinho e recarregue a página)
+        event.preventDefault();
+        
+        // Captura o contêiner principal para saber qual tela está ativa
+        const wrapper = document.getElementById('main-wrapper');
+        
+        // Se a div tiver a classe 'wrapper-show-signup', o utilizador está na aba de Cadastro
+        if (wrapper && wrapper.classList.contains('wrapper-show-signup')) {
+            registrar();
+        } 
+        // Caso contrário, ele está na aba de Login padrão
+        else {
+            logar();
+        }
+    }
+});
+
 // --- INTEGRAÇÃO GOOGLE AUTH ---
 
 window.addEventListener('load', function () {
