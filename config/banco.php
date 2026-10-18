@@ -1,43 +1,22 @@
 <?php
-	// Selecione que onde o banco esta
-	$local = 'local';
-	// $local = 'nuvem';
-	
-	// Selecione o tipo de banco
-	$tipo = 'desenvolvimento';
-	// $tipo = 'producao';
-	
-	
-	if ($local === 'local' && $tipo === 'desenvolvimento') {
-		define('DB_HOST', '127.0.0.1'); // endereco host
-		define('DB_PORT', '5432');		// porta
-		define('DB_NAME', 'postgres');  // nome do banco
-		define('DB_USER', 'postgres');  // nome do usuario
-		define('DB_PASS', 'walle7');    // senha
-		define('DB_SCHEMA', 'medplus'); // esquema local
-	} else if ($local === 'nuvem' && $tipo === 'desenvolvimento') {
-		define('DB_HOST', '127.0.0.1'); 
-		define('DB_PORT', '5432');		
-		define('DB_NAME', 'postgres');  
-		define('DB_USER', 'postgres');  
-		define('DB_PASS', 'walle7');    
-		define('DB_SCHEMA', 'public'); 
-	} else if ($local === 'local' && $tipo === 'producao') {
-		define('DB_HOST', '127.0.0.1'); 
-		define('DB_PORT', '5432');		
-		define('DB_NAME', 'postgres');  
-		define('DB_USER', 'postgres');  
-		define('DB_PASS', 'walle7');    
-		define('DB_SCHEMA', 'public'); 
+	$envPath = __DIR__ . '/../.env'; 
+
+	// Lê o arquivo e extrai as variáveis de forma segura
+	if (file_exists($envPath)) {
+		$env = parse_ini_file($envPath);
+		
+		// Define as constantes do sistema puxando do .env
+		define('DB_HOST',   $env['DB_HOST']); 
+		define('DB_PORT',   $env['DB_PORT']);		
+		define('DB_NAME',   $env['DB_NAME']);  
+		define('DB_USER',   $env['DB_USER']);  
+		define('DB_PASS',   $env['DB_PASS']);    
+		define('DB_SCHEMA', $env['DB_SCHEMA']); 
+		
 	} else {
-		define('DB_HOST', '127.0.0.1'); 
-		define('DB_PORT', '5432');		
-		define('DB_NAME', 'postgres');  
-		define('DB_USER', 'postgres');  
-		define('DB_PASS', 'walle7');    
-		define('DB_SCHEMA', 'public'); 
+		die("Erro de segurança: Arquivo .env ausente. O sistema foi interrompido.");
 	}
 	
-	// variavel global de conexao
+	// Variável global de conexão intocada e funcionando dinamicamente
 	$GLOBALS['conexao'] = "host=" . DB_HOST . " port=" . DB_PORT . " dbname=" . DB_NAME . " user=" . DB_USER . " password=" . DB_PASS ." options='-c search_path=" . DB_SCHEMA ."'";
 ?>
