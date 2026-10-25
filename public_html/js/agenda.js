@@ -103,9 +103,9 @@ function atualizarContadoresCards() {
 
 	const contadores = document.querySelectorAll('.summaries article strong');
 	if (contadores.length >= 3) {
-		contadores[0].textContent = String(idsContadosMes.size).padStart(2, '0');
-		contadores[1].textContent = String(idsConsultasMes.size).padStart(2, '0');
-		contadores[2].textContent = String(idsContadosProx.size).padStart(2, '0');
+		contadores[0].textContent = String(idsContadosMes.size).padStart(1, '0');
+		contadores[1].textContent = String(idsConsultasMes.size).padStart(1, '0');
+		contadores[2].textContent = String(idsContadosProx.size).padStart(1, '0');
 	}
 }
 
