@@ -163,7 +163,7 @@
 .modal-header h3 { margin: 0; font-size: 16px; color: #102b3c; display: flex; align-items: center; gap: 10px; }
 .modal-header h3 i { color: #0da99a; }
 
-.btn-close { background: transparent; border: none; font-size: 18px; color: #92a0ac; transition: 0.2s; }
+.btn-close { background: transparent; border: none; border-radius: 50%; font-size: 18px; color: #92a0ac; transition: 0.2s; }
 .btn-close:hover { color: #f44336; }
 
 .modal-body { min-height: 0; padding: 25px; flex: 1 1 auto; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }

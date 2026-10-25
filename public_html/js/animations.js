@@ -119,20 +119,30 @@
     };
   }
 
-  function installRipples() {
+function installRipples() {
     document.addEventListener("pointerdown", event => {
-      const button = event.target.closest("button");
-      if (!button || reducedMotion) return;
-      button.classList.add("anim-ripple-host");
-      const bounds = button.getBoundingClientRect();
-      const ripple = document.createElement("span");
-      ripple.className = "anim-ripple";
-      ripple.style.left = `${event.clientX - bounds.left}px`;
-      ripple.style.top = `${event.clientY - bounds.top}px`;
-      button.appendChild(ripple);
-      ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
+        // Agora procura por botões nativos OU qualquer elemento com a classe .with-ripple
+        const targetEl = event.target.closest("button, .with-ripple");
+        
+        if (!targetEl || reducedMotion) return;
+        
+        // Garante que o elemento tenha as propriedades estruturais necessárias
+        targetEl.classList.add("with-ripple");
+        
+        const bounds = targetEl.getBoundingClientRect();
+        const ripple = document.createElement("span");
+        ripple.className = "anim-ripple";
+        
+        // Injeta a onda exatamente na coordenada do toque/clique
+        ripple.style.left = `${event.clientX - bounds.left}px`;
+        ripple.style.top = `${event.clientY - bounds.top}px`;
+        
+        targetEl.appendChild(ripple);
+        
+        // Remove a div da onda assim que a animação termina para não pesar o DOM
+        ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
     });
-  }
+}
 
   document.addEventListener("DOMContentLoaded", () => {
     /* Substitui apenas a transição visual; armazenamento e seleção continuam iguais. */
@@ -175,3 +185,54 @@ document.addEventListener('click', (event) => {
         profile.classList.remove('active');
     }
 });
+
+// ==========================================
+//   NAVEGAÇÃO INTERNA DE SUB-PÁGINAS (AJUSTES)
+// ==========================================
+window.abrirSubPagina = function(idSubPagina) {
+    const painelPrincipal = document.getElementById('painel-ajustes-main');
+    const subPagina = document.getElementById(idSubPagina);
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const duration = reducedMotion ? 0 : 150; // var(--anim-fast)
+
+    if (!painelPrincipal || !subPagina) return;
+
+    // 1. Anima o painel principal a sair
+    painelPrincipal.classList.remove('anim-module-in');
+    painelPrincipal.classList.add('anim-module-out');
+
+    // 2. Aguarda a saída e anima a sub-página a entrar
+    setTimeout(() => {
+        painelPrincipal.style.display = 'none';
+        painelPrincipal.classList.remove('anim-module-out');
+
+        subPagina.style.display = 'block';
+        subPagina.classList.remove('anim-module-out');
+        void subPagina.offsetWidth; // Força o navegador a reiniciar a animação
+        subPagina.classList.add('anim-module-in');
+    }, duration);
+};
+
+window.fecharSubPagina = function(idSubPagina) {
+    const painelPrincipal = document.getElementById('painel-ajustes-main');
+    const subPagina = document.getElementById(idSubPagina);
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const duration = reducedMotion ? 0 : 150;
+
+    if (!painelPrincipal || !subPagina) return;
+
+    // 1. Anima a sub-página a sair
+    subPagina.classList.remove('anim-module-in');
+    subPagina.classList.add('anim-module-out');
+
+    // 2. Aguarda a saída e traz o painel principal de volta
+    setTimeout(() => {
+        subPagina.style.display = 'none';
+        subPagina.classList.remove('anim-module-out');
+
+        painelPrincipal.style.display = 'block';
+        painelPrincipal.classList.remove('anim-module-out');
+        void painelPrincipal.offsetWidth; 
+        painelPrincipal.classList.add('anim-module-in');
+    }, duration);
+};
