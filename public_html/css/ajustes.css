@@ -1,0 +1,118 @@
+.ajuste-option {
+	cursor:pointer;
+	align-items:center; 
+	color: black;
+	background-color: white;
+	box-shadow: 0 3px 12px #19364a0a;
+	margin-bottom: 16px;
+	padding: 12px 24px;
+}
+
+.ajuste-option:hover {
+	box-shadow: 0 10px 24px rgba(25, 54, 74, .08);
+}
+
+.ajuste-option .image {
+	width: 50px;
+	height: 50px; 
+	display: flex; 
+	align-items: center; 
+	justify-content: center;
+}
+
+.ajuste-option .icon {
+	width: 20px; 
+	height: 50px; 
+	display: flex; 
+	align-items: center; 
+	justify-content: center;
+}
+
+/* =========================================
+   EFEITO RIPPLE (ONDA DE CLIQUE GENÉRICA)
+========================================= */
+.with-ripple {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer; /* Garante que o elemento pareça clicável */
+    -webkit-tap-highlight-color: transparent; /* Remove o quadrado azul nativo do mobile */
+}
+
+.anim-ripple {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: currentColor; /* Herda a cor do texto do elemento pai */
+    opacity: 0.16;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0);
+    animation: anim-ripple 500ms ease-out forwards;
+}
+
+@keyframes anim-ripple { 
+    /* Aumentado o scale para 25 para conseguir preencher divs e cartões maiores */
+    to { opacity: 0; transform: translate(-50%, -50%) scale(25); } 
+}
+
+.btn-voltar {
+    background: transparent;
+    border: none;
+    color: #6c7a89;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-voltar:hover { background: #e1e8eb; color: #102b3c; }
+.btn-voltar i { margin-right: 5px; }
+
+.btn-trocar-foto {
+    position: absolute;
+    bottom: 0;
+    right: 50%;
+    transform: translateX(45px);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #0da99a;
+    color: white;
+    border: 2px solid white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    display: grid;
+    place-items: center;
+}
+
+@media (max-width: 760px) {
+    .subpage-painel { top: 22px; left: 15px; right: 15px; }
+}
+
+/* Container para alinhar input e ícone */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Garante que o input ocupe 100% e dá um espaço à direita para o texto não encostar no ícone */
+.password-wrapper input {
+    width: 100%;
+    padding-right: 40px; 
+}
+
+/* Estilo e posicionamento do ícone Font Awesome */
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    cursor: pointer;
+    color: #6a737d; /* Cor cinza neutra */
+    transition: color 0.3s ease;
+    font-size: 1.1em;
+}
+
+/* Efeito ao passar o mouse (pode alterar para o verde do MedPlus, ex: #2ecc71) */
+.toggle-password:hover {
+    color: #333; 
+}

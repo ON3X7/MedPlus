@@ -7,12 +7,12 @@
     <link rel="stylesheet" href="/css/w3.css">
     <link rel="stylesheet" href="/css/menu.css">
     <link rel="stylesheet" href="/css/agenda.css">
+    <link rel="stylesheet" href="/css/ajustes.css">
     <link rel="stylesheet" href="/css/notification.css">
     <link rel="stylesheet" href="/css/animations.css">
     <link rel="stylesheet" href="/css/fontawesome-free-7.2.0-web/css/all.min.css">
 	<link rel="icon" type="image/x-icon" href="/img/iconApp_nobk_512x512.png">
     <script src="/js/ajax.js"></script>
-    <script src="/js/utilitarios.js"></script>
     <script src="/js/notification.js"></script>
     <script src="/js/animations.js"></script>
 </head>
@@ -66,7 +66,7 @@
 						</div>
 						<div class="dropdown-body-google">
 							<button class="dropdown-btn" onclick="mudarModulo('Ajustes'); document.querySelector('.profile').classList.remove('active');">
-								<i class="fa-solid fa-sliders"></i> Configurações da conta
+								<i class="fa-solid fa-sliders"></i> Configurações
 							</button>
 						</div>
 						<hr class="dropdown-divider">
@@ -101,7 +101,7 @@
 			  <button class="primary w3-button" id="new-event"><i class="fa-solid fa-plus"></i> <span>Novo compromisso</span></button>
 			</section>
 
-			<section class="summaries">
+			<section class="summaries anim-cascade-rise">
 			  <article class="w3-card"><b class="teal"><i class="fa-regular fa-calendar-check"></i></b><div><strong>00</strong><small>Compromissos no mês</small></div></article>
 			  <article class="w3-card"><b class="blue"><i class="fa-solid fa-stethoscope"></i></b><div><strong>00</strong><small>Consultas agendadas</small></div></article>
 			  <article class="w3-card"><b class="orange"><i class="fa-regular fa-clock"></i></b><div><strong>00</strong><small>Próximos 7 dias</small></div></article>
@@ -113,13 +113,13 @@
 				  <div class="month"><button><i class="fa-solid fa-chevron-left"></i></button><h2><span></span></h2><button><i class="fa-solid fa-chevron-right"></i></button></div>
 				  <div class="views"><button>Dia</button><button>Semana</button><button class="active">Mês</button></div>
 				</header>
-				<div class="calendar-grid" id="calendar"></div>
+				<div class="calendar-grid anim-trigger-fade" id="calendar"></div>
 			  </section>
 
 			  <aside class="day-panel w3-card">
 				<header><div><small>DATA SELECIONADA</small><h2><span id="selected-day"></span></h2></div><button><i class="fa-solid fa-ellipsis"></i></button></header>
 				<div class="stats"><span><b id="event-count">0</b> compromisso(s)</span></div>
-				<div class="appointments" id="appointments"></div>
+				<div class="appointments anim-trigger-slide anim-cascade-slide" id="appointments"></div>
 			  </aside>
 			</div>
 			
@@ -341,14 +341,166 @@
           </div>
 
           <!-- PÁGINA: AJUSTES -->
-          <div class="content w3-container module-page" id="pag-ajustes" style="display: none;">
-            <section class="heading">
-                <div><small>CONFIGURAÇÕES</small><h1>Ajustes</h1><p>Preferências da conta e sistema.</p></div>
-            </section>
-            <div style="height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #aab9c4; text-align: center;">
-                <i class="fa-solid fa-sliders" style="font-size: 3rem; margin-bottom: 15px; color: #e1e8eb;"></i>
-                <p>Módulo de Ajustes em construção.</p>
+          <div class="content w3-container module-page" id="pag-ajustes" style="display: none; position: relative;">
+            
+            <!-- Painel Principal de Ajustes -->
+            <div id="painel-ajustes-main">
+                <section class="heading">
+                    <div><small>CONFIGURAÇÕES</small><h1>Ajustes</h1><p>Preferências da conta e sistema.</p></div>
+                </section>
+                
+                <div class="anim-cascade-rise">
+                    <article class="w3-container w3-row w3-round-large ajuste-option with-ripple anim-item-in" onclick="abrirSubPagina('subpag-conta')">
+                        <div class="w3-col image w3-left"><i class="fa-solid fa-user w3-xxlarge"></i></div>
+                        <div class="w3-col icon w3-right"><i class="fa-solid fa-chevron-right w3-large"></i></div>
+                        <div class="w3-rest w3-container">
+                            <h6 style="margin: 0 0 5px 0;"><strong>Conta</strong></h6>
+                            <span class="w3-small">Nome, senha, foto e mais.</span>
+                        </div>
+                    </article>
+                    
+                    <article class="w3-container w3-row w3-round-large ajuste-option with-ripple anim-item-in" onclick="abrirSubPagina('subpag-saude')">
+                        <div class="w3-col image w3-left"><i class="fa-solid fa-dumbbell w3-xxlarge"></i></div>
+                        <div class="w3-col icon w3-right"><i class="fa-solid fa-chevron-right w3-large"></i></div>
+                        <div class="w3-rest w3-container">
+                            <h6 style="margin: 0 0 5px 0;"><strong>Saúde</strong></h6>
+                            <span class="w3-small">Acompanhe seu IMC.</span>
+                        </div>
+                    </article>
+                    
+                    <article class="w3-container w3-row w3-round-large ajuste-option with-ripple anim-item-in">
+                        <div class="w3-col image w3-left"><i class="fa-solid fa-file-invoice-dollar w3-xxlarge"></i></div>
+                        <div class="w3-col icon w3-right"><i class="fa-solid fa-chevron-right w3-large"></i></div>
+                        <div class="w3-rest w3-container">
+                            <h6 style="margin: 0 0 5px 0;"><strong>Planos</strong></h6>
+                            <span class="w3-small">Assinatura da conta.</span>
+                        </div>
+                    </article>
+                    
+                    <article class="w3-container w3-row w3-round-large ajuste-option with-ripple anim-item-in">
+                        <div class="w3-col image w3-left"><i class="fa-solid fa-bell w3-xxlarge"></i></div>
+                        <div class="w3-col icon w3-right"><i class="fa-solid fa-chevron-right w3-large"></i></div>
+                        <div class="w3-rest w3-container">
+                            <h6 style="margin: 0 0 5px 0;"><strong>Notificações</strong></h6>
+                            <span class="w3-small">Ajustar os avisos do sistema.</span>
+                        </div>
+                    </article>
+					
+					<article class="w3-container w3-row w3-round-large ajuste-option with-ripple anim-item-in">
+                        <div class="w3-col image w3-left"><i class="fa-solid fa-face-angry w3-xxlarge"></i></div>
+                        <div class="w3-col icon w3-right"><i class="fa-solid fa-chevron-right w3-large"></i></div>
+                        <div class="w3-rest w3-container">
+                            <h6 style="margin: 0 0 5px 0;"><strong>Burnout Risk™️</strong></h6>
+                            <span class="w3-small">Ajustar o sistema de burnout.</span>
+                        </div>
+                    </article>
+                </div>
+                
+                <article class="w3-container w3-center w3-text-gray" style="margin-top: 40px;">
+                    <h5 style="margin-bottom:0;"><strong>Med+</strong></h5>
+                    <center class="w3-tiny">Cuidando de você em todos os momentos</center>
+                    <br>
+                    <span>Versão {{VERSAO_APP}}</span><br>
+                    <span>Criado por: {{AUTORES_APP}}</span>
+                    <br><br>
+                    <a href="#" style="text-decoration:none; color: #0da99a;"><em>Central de Suporte</em></a>
+                </article>
             </div>
+
+            <!-- SUB-PÁGINA: CONTA -->
+            <div id="subpag-conta" class="w3-animate-opacity" style="display: none;">
+                <section class="heading flex-between" style="align-items: center; margin-bottom: 25px;">
+                    <button class="btn-voltar with-ripple" onclick="fecharSubPagina('subpag-conta')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+                    <div><small>EDITAR</small><h2 style="margin:0; font-size:1.5rem; font-weight:700;">Conta</h2></div>
+                </section>
+                
+                <form id="form-ajuste-conta" class="w3-card w3-white w3-round-large w3-padding-large">
+                    <div class="w3-center" style="margin-bottom: 25px; position:relative;">
+                        {{FOTO_PERFIL_GRANDE}}
+                        <button type="button" class="btn-trocar-foto with-ripple"><i class="fa-solid fa-camera"></i></button>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="ajuste-nome">Nome Completo</label>
+                        <input type="text" id="ajuste-nome" value="{{NOME_USUARIO}}" required>
+                    </div>
+                    
+                    <div class="w3-row">
+                        <div class="input-group w3-left w3-mobile" style="width:49%;">
+                            <label  for="ajuste-nasc">Data de Nascimento</label>
+                            <input type="date" id="ajuste-nasc" value="{{DATA_NASCIMENTO}}">
+                        </div>
+                        <div class="input-group w3-right w3-mobile" style="width:49%;">
+                            <label  for="ajuste-sexo">Sexo Biológico</label>
+                            <select id="ajuste-sexo">
+                                <option value="">Selecionar...</option>
+                                <option value="Masculino" {{CHECK_SEXO_M}}>Masculino</option>
+                                <option value="Feminino" {{CHECK_SEXO_F}}>Feminino</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {{MSG_GOOGLE}}
+                    <div class="form-row" {{DISPLAY_SENHA}}>
+                        <div class="input-group">
+                            <label for="ajuste-senha">Nova Senha</label>
+							<div class="password-wrapper">
+								<input type="password" id="ajuste-senha" placeholder="••••••••" oninput="compararSenhas();">
+								<i class="fa-solid fa-eye toggle-password" onclick="toggleVisibility('ajuste-senha', this)"></i>
+							</div>
+                        </div>
+                        <div class="input-group">
+                            <label  for="ajuste-conf-senha">Confirmar Nova Senha</label>
+							<div class="password-wrapper">
+								<input type="password" id="ajuste-conf-senha" placeholder="••••••••" oninput="compararSenhas();">
+								<i class="fa-solid fa-eye toggle-password" onclick="toggleVisibility('ajuste-conf-senha', this)"></i>
+							</div>
+						</div>
+                    </div>
+                    
+                    <hr style="border-top: 1px solid #e1e8eb; margin: 25px 0;">
+                    <div class="flex-between">
+                        <button type="button" class="btn-outline with-ripple" onclick="fecharSubPagina('subpag-conta')">Cancelar</button>
+                        <button type="button" class="btn-primary with-ripple" onclick="salvarConta()"><i class="fa-solid fa-save"></i> Salvar</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- SUB-PÁGINA: SAÚDE (IMC) -->
+            <div id="subpag-saude" class="w3-animate-opacity" style="display: none;">
+                <section class="heading flex-between" style="align-items: center; margin-bottom: 25px;">
+                    <button class="btn-voltar with-ripple" onclick="fecharSubPagina('subpag-saude')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+                    <div><small>BEM-ESTAR</small><h2 style="margin:0; font-size:1.5rem; font-weight:700;">Índice IMC</h2></div>
+                </section>
+                
+                <div class="w3-card w3-white w3-round-large w3-padding-large">
+                    <div style="text-align:center; padding: 20px 0; color:#0da99a;">
+                        <i class="fa-solid fa-weight-scale" style="font-size:3rem; margin-bottom:10px;"></i>
+                        <h4 id="display-imc" style="margin:0; font-weight:800;">--</h4>
+                        <span id="display-imc-texto" class="w3-small" style="color:#6c7a89;">Preencha os dados abaixo</span>
+                    </div>
+
+                    <form id="form-ajuste-saude">
+                        <div class="w3-row">
+                            <div class="input-group w3-left w3-mobile" style="width:49%;">
+                                <label for="ajuste-peso">Peso Atual (kg)</label>
+                                <input type="number" step="0.1" id="ajuste-peso" value="{{PESO_ATUAL}}" placeholder="Ex: 75,5" onkeyup="calcularPreviaIMC()">
+                            </div>
+                            <div class="input-group w3-right w3-mobile" style="width:49%;">
+                                <label  for="ajuste-altura">Altura (m)</label>
+                                <input type="number" step="0.01" id="ajuste-altura" value="{{ALTURA_ATUAL}}" placeholder="Ex: 1,75" onkeyup="calcularPreviaIMC()">
+                            </div>
+                        </div>
+                        
+                        <hr style="border-top: 1px solid #e1e8eb; margin: 25px 0;">
+                        <div class="flex-between">
+                            <button type="button" class="btn-outline with-ripple" onclick="fecharSubPagina('subpag-saude')">Cancelar</button>
+                            <button type="button" class="btn-primary with-ripple" onclick="salvarSaude()"><i class="fa-solid fa-save"></i> Atualizar IMC</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
           </div>
 
 		</main>
@@ -362,6 +514,8 @@
 		</nav>
 		<div class="toast" id="toast" hidden></div>
 	  </div>
+	  <script src="/js/utilitarios.js"></script>
 	  <script src="/js/agenda.js"></script>
+	  <script src="/js/ajustes.js"></script>
 </body>
 </html>

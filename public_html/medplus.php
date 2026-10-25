@@ -6,6 +6,7 @@
 	include $GLOBALS['caminho']['bibliotecas'].'lib1.php'; // biblioteca principal v1
 	include $GLOBALS['caminho']['dao'].'usuarioDao.php'; // dao dos usuarios
 	include $GLOBALS['caminho']['dao'].'agendaDao.php'; // dao da agenda
+	include $GLOBALS['caminho']['dao'].'imcDao.php'; // dao do imc
 	
 	Session::start();
 
@@ -114,29 +115,67 @@
 		function TelaMenu() {
 			$oCorpo = new ObjetoHtml($this->caminho, 'menu.html');
 			
-			// Puxa os dados da sessão
+			// 1. Dados Básicos da Sessão
 			$nome = $_SESSION['user']['nome'] ?? 'Convidado';
 			$email = $_SESSION['user']['email'] ?? 'Usuário convidado';
 			$imagem = $_SESSION['user']['imagem'] ?? '';
 			
-			// Se o utilizador tiver foto do Google, cria a tag <img>, senão, cria o ícone de iniciais
+			// Dados Adicionais para as telas de Ajuste (Tabela Usuario e IMC)
+			if ($_SESSION['user']['data_nascimento'] != '') {
+				$oNascimento = new DateTime($_SESSION['user']['data_nascimento']);
+				$data_nascimento = $oNascimento->format('Y-m-d');
+			} else {
+				$data_nascimento = '';
+			}
+			
+			$sexo = $_SESSION['user']['sexo'] ?? '';
+			$via_google = $_SESSION['user']['via_google'] ?? false;
+			$peso = $_SESSION['user']['peso'] ?? '';     // Virá da tabela imc via JOIN no login
+			$altura = $_SESSION['user']['altura'] ?? ''; // Virá da tabela imc via JOIN no login
+			
+			// 2. Processamento da Foto de Perfil
 			if (!empty($imagem)) {
-				// Adicionamos referrerpolicy para evitar bloqueios do Google em imagens cross-origin
 				$fotoHtml = '<img src="' . $imagem . '" alt="Foto de perfil" referrerpolicy="no-referrer">';
+				// Foto maior para o menu de configurações da conta
+				$fotoHtmlGrande = '<img src="' . str_replace('=s96-c', '=s150-c', $imagem) . '" alt="Foto de perfil" style="width:100px; height:100px; border-radius:50%; object-fit:cover;" referrerpolicy="no-referrer">';
 			} else {
 				$arrayNome = explode(" ", $nome);
 				$primeiroNome = $arrayNome[0];
 				$ultimoNome = $arrayNome[count($arrayNome) - 1];
 				$iniciais = strtoupper(substr($primeiroNome, 0, 1) . substr($ultimoNome, 0, 1));
 				$fotoHtml = '<b>' . $iniciais . '</b>';
+				$fotoHtmlGrande = '<b style="width:100px; height:100px; font-size:40px; border-radius:50%; display:grid; place-items:center; background:#0da99a; color:white;">' . $iniciais . '</b>';
 			}
 			
-			// Faz as substituições no HTML
-			$oCorpo->conteudo = str_replace('{{FOTO_PERFIL}}', $fotoHtml, $oCorpo->conteudo);
-			$oCorpo->conteudo = str_replace('{{NOME_USUARIO}}', $nome, $oCorpo->conteudo);
-			$oCorpo->conteudo = str_replace('{{EMAIL_USUARIO}}', $email, $oCorpo->conteudo);
+			// Ocultar campo de senha se logado via Google
+			$displaySenha = $via_google ? 'style="display:none;"' : '';
+			$mensagemGoogle = $via_google ? '<small class="w3-text-green"><i class="fa-brands fa-google"></i> Conta vinculada ao Google. A senha é gerida externamente.</small>' : '';
 			
-			// Imprime a tela final
+			// 3. Substituições Globais e de Perfil
+			$html = $oCorpo->conteudo;
+			$html = str_replace('{{FOTO_PERFIL}}', $fotoHtml, $html);
+			$html = str_replace('{{FOTO_PERFIL_GRANDE}}', $fotoHtmlGrande, $html);
+			$html = str_replace('{{NOME_USUARIO}}', $nome, $html);
+			$html = str_replace('{{EMAIL_USUARIO}}', $email, $html);
+			
+			// Substituições do Formulário de Conta
+			$html = str_replace('{{DATA_NASCIMENTO}}', $data_nascimento, $html);
+			$html = str_replace('{{CHECK_SEXO_M}}', ($sexo == 'Masculino') ? 'selected' : '', $html);
+			$html = str_replace('{{CHECK_SEXO_F}}', ($sexo == 'Feminino') ? 'selected' : '', $html);
+			$html = str_replace('{{DISPLAY_SENHA}}', $displaySenha, $html);
+			$html = str_replace('{{MSG_GOOGLE}}', $mensagemGoogle, $html);
+			
+			// Substituições do Formulário de Saúde (IMC)
+			$html = str_replace('{{PESO_ATUAL}}', $peso, $html);
+			$html = str_replace('{{ALTURA_ATUAL}}', $altura, $html);
+			
+			// 4. Substituições do Rodapé (Versão e Autores)
+			$versao = $GLOBALS['version'] ?? '0.0.5 alpha';
+			$autores = $GLOBALS['authors'] ?? 'Equipe Med+';
+			$html = str_replace('{{VERSAO_APP}}', $versao, $html);
+			$html = str_replace('{{AUTORES_APP}}', $autores, $html);
+			
+			$oCorpo->conteudo = $html;
 			$oCorpo->imprimir();
 		}
 		
@@ -300,6 +339,81 @@
 			}
 			
 			echo json_encode(array('status' => $sucesso !== false));
+		}
+		
+		// AREA DE MODULO AJUSTES (CONTA E SAÚDE)
+		function atualizarConta() {
+			if (!isset($_SESSION['user']['id'])) return;
+
+			$oUsua = new usuarioDAO();
+			$sucesso = $oUsua->atualizarConta($_SESSION['user']['id'], $this->campos);
+
+			if ($sucesso) {
+				// Atualiza a sessão para o HTML refletir imediatamente as mudanças
+				$_SESSION['user']['nome'] = $this->campos['nome'];
+				$_SESSION['user']['data_nascimento'] = $this->campos['data_nascimento'];
+				$_SESSION['user']['sexo'] = $this->campos['sexo'];
+				
+				echo json_encode(['status' => true]);
+			} else {
+				echo json_encode(['status' => false, 'mensagem' => 'Erro ao atualizar dados no banco de dados.']);
+			}
+		}
+
+		function atualizarSaude() {
+			if (!isset($_SESSION['user']['id'])) return;
+
+			$oImc = new imcDAO();
+			$sucesso = $oImc->salvarIMC($_SESSION['user']['id'], $this->campos['altura'], $this->campos['peso']);
+
+			if ($sucesso) {
+				$_SESSION['user']['altura'] = $this->campos['altura'];
+				$_SESSION['user']['peso'] = $this->campos['peso'];
+				echo json_encode(['status' => true]);
+			} else {
+				echo json_encode(['status' => false, 'mensagem' => 'Erro ao registar o Índice de Massa Corporal.']);
+			}
+		}
+
+		// Recebe e processa o upload de ficheiros binários da Foto de Perfil
+		function uploadFotoPerfil() {
+			if (!isset($_SESSION['user']['id'])) return;
+
+			if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+				$id_usuario = $_SESSION['user']['id'];
+				$nomeCompleto = $_SESSION['user']['nome'];
+				
+				// Formata o nome para remover espaços e caracteres especiais (ex: "Dr. João Silva" -> "dr_joao_silva")
+				$nomeFormatado = preg_replace('/[^a-zA-Z0-9]+/', '_', strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $nomeCompleto)));
+				
+				// Define os caminhos absolutos e relativos
+				$pastaDestinoAbsoluta = __DIR__ . "/img/users/" . $nomeFormatado;
+				$nomeArquivo = "user_profile_" . $id_usuario . ".png";
+				$caminhoCompleto = $pastaDestinoAbsoluta . "/" . $nomeArquivo;
+				$caminhoRelativo = "/img/users/" . $nomeFormatado . "/" . $nomeArquivo;
+				
+				// Cria a pasta do utilizador caso ela ainda não exista
+				if (!is_dir($pastaDestinoAbsoluta)) {
+					mkdir($pastaDestinoAbsoluta, 0755, true);
+				}
+
+				// Move a foto da pasta temporária do PHP para a pasta final do utilizador
+				if (move_uploaded_file($_FILES['foto']['tmp_name'], $caminhoCompleto)) {
+					
+					$oUsua = new usuarioDAO();
+					$oUsua->atualizarFoto($id_usuario, $caminhoRelativo);
+					
+					// Atualiza a sessão com a nova URL
+					$_SESSION['user']['imagem'] = $caminhoRelativo;
+
+					// Devolve o caminho relativo para o JavaScript poder trocar o src da <img> imediatamente
+					echo json_encode(['status' => true, 'nova_url' => $caminhoRelativo]);
+				} else {
+					echo json_encode(['status' => false, 'mensagem' => 'Erro ao mover a imagem para a pasta do servidor.']);
+				}
+			} else {
+				echo json_encode(['status' => false, 'mensagem' => 'Nenhuma imagem foi recebida ou houve erro no upload.']);
+			}
 		}
 	}
 	

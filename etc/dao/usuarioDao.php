@@ -79,6 +79,56 @@
 				return false;
 			}
 		}
+		
+		// Atualiza os dados principais da conta
+		function atualizarConta($id_usuario, $campos) {
+			try {
+				$sql = "UPDATE usuario SET nome = $1, data_nascimento = $2, sexo = $3";
+				
+				// Trata campos nulos/vazios
+				$data_nascimento = empty($campos['data_nascimento']) ? null : $campos['data_nascimento'];
+				$sexo = empty($campos['sexo']) ? null : $campos['sexo'];
+				
+				// Se a senha foi preenchida, atualiza-a também
+				if (!empty($campos['senha'])) {
+					$sql .= ", senha = $4 WHERE id = $5;";
+					$params = [
+						$campos['nome'],
+						$data_nascimento,
+						$sexo,
+						hash('sha256', $campos['senha']),
+						$id_usuario
+					];
+				} else {
+					$sql .= " WHERE id = $4;";
+					$params = [
+						$campos['nome'],
+						$data_nascimento,
+						$sexo,
+						$id_usuario
+					];
+				}
+				
+				$this->db->limpar()
+						 ->adicionar($sql)
+						 ->realizarQuery($params);
+				return true;
+			} catch (Exception $e) {
+				return false;
+			}
+		}
+		
+		// Atualiza apenas o caminho da imagem de perfil
+		function atualizarFoto($id_usuario, $caminhoRelativo) {
+			try {
+				$this->db->limpar()
+						 ->adicionar("UPDATE usuario SET imagem = $1 WHERE id = $2;")
+						 ->realizarQuery([$caminhoRelativo, $id_usuario]);
+				return true;
+			} catch (Exception $e) {
+				return false;
+			}
+		}
 
 		// Atualiza um usuário existente que acessou via Google, permitindo que a sessão ignore a senha
 		function ativarViaGoogle($campos) {
