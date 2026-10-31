@@ -17,16 +17,16 @@ function salvarConta() {
 		return false;
 	}
 	
-	let ajax = new CustomAjax(true);
-	ajax.add("acao", "atualizarConta");
-	ajax.add("nome", nome.value); 
-	ajax.add("data_nascimento", nasc.value); 
-	ajax.add("sexo", sexo.value);  
+	let api = new CustomFetch();
+	api.add("acao", "atualizarConta");
+	api.add("nome", nome.value); 
+	api.add("data_nascimento", nasc.value); 
+	api.add("sexo", sexo.value);  
 	if (senha.value !== '') {
-		ajax.add("senha", senha.value);  
+		api.add("senha", senha.value);  
 	}
 
-	ajax.send("medplus.php").then(response => {
+	api.send("medplus.php").then(response => {
 		try {
 			let json = JSON.parse(response);
 			if (json.status) {
@@ -55,12 +55,12 @@ function salvarSaude() {
 		return false;
 	}
 	
-	let ajax = new CustomAjax(true);
-	ajax.add("acao", "atualizarSaude");
-	ajax.add("peso", peso.value); 
-	ajax.add("altura", altura.value);
+	let api = new CustomFetch();
+	api.add("acao", "atualizarSaude");
+	api.add("peso", peso.value); 
+	api.add("altura", altura.value);
 
-	ajax.send("medplus.php").then(response => {
+	api.send("medplus.php").then(response => {
 		try {
 			let json = JSON.parse(response);
 			if (json.status) {
@@ -84,8 +84,6 @@ function calcularPreviaIMC() {
 	}
 	
 	const result = peso.value / altura.value**2;
-	
-	console.log(result);
 	
 	if (result >= 18.6 && result < 25) {
 		display.innerHTML = '<div class="w3-animate-zoom"><span>Parabéns! Seu IMC está <em>normal</em> </span><i class="w3-text-green fa-regular fa-circle-check"></i></div>';
@@ -166,45 +164,44 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function processarUploadFoto(ficheiro) {
-    // Usa FormData para empacotar o ficheiro binário
-    let formData = new FormData();
-    formData.append('acao', 'uploadFotoPerfil');
-    formData.append('foto', ficheiro);
+    let api = new CustomFetch();
+    api.add('acao', 'uploadFotoPerfil');
+    api.add('foto', ficheiro);
 
+    // O CustomFetch já liga e desliga o loader automaticamente, mas se quiser 
+    // manter a notificação de texto que já usava, pode deixá-la aqui:
     showNotification('success', 'A enviar imagem, aguarde...');
 
-    fetch('medplus.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(json => {
-        if (json.status) {
-            showNotification('success', 'Foto de perfil atualizada com sucesso!');
+    api.send('medplus.php')
+        .then(respostaServidor => {
+            let json = JSON.parse(respostaServidor);
             
-            // O truque do '?t=' (Cache-Busting):
-            // Como o ficheiro se chama sempre "user_profile_X.png", o navegador tentaria usar a versão antiga no cache.
-            // Ao anexar o timestamp (ex: ?t=1690000000), forçamos o navegador a baixar e renderizar a nova imagem.
-            const urlAtualizada = json.nova_url + "?t=" + new Date().getTime(); 
-            
-            // Procura todas as instâncias da foto no ecrã e troca a fonte dinamicamente
-            const imagensPerfil = document.querySelectorAll('img[alt="Foto de perfil"]');
-            
-            if (imagensPerfil.length > 0) {
-                imagensPerfil.forEach(img => {
-                    img.src = urlAtualizada;
-                });
+            if (json.status) {
+                showNotification('success', 'Foto de perfil atualizada com sucesso!');
+                
+                // O truque do '?t=' (Cache-Busting)
+                const urlAtualizada = json.nova_url + "?t=" + new Date().getTime(); 
+                const imagensPerfil = document.querySelectorAll('img[alt="Foto de perfil"]');
+                
+                if (imagensPerfil.length > 0) {
+                    imagensPerfil.forEach(img => {
+                        img.src = urlAtualizada;
+                    });
+                } else {
+                    // Recarrega a página para o PHP gerar as tags <img> corretas
+                    setTimeout(() => window.location.reload(), 1000);
+                }
             } else {
-                // Se não houver <img> no ecrã (o utilizador não tinha foto e usava a tag <b> com as iniciais),
-                // recarregamos a página suavemente para o PHP gerar as novas tags <img> corretas em todos os lugares.
-                setTimeout(() => window.location.reload(), 1000);
+                showNotification('error', json.mensagem || 'Erro ao guardar a foto no servidor.');
             }
-        } else {
-            showNotification('error', json.mensagem || 'Erro ao guardar a foto no servidor.');
-        }
-    })
-    .catch(err => {
-        showNotification('error', 'Ocorreu um erro interno de conexão.');
-        console.error(err);
-    });
+        })
+        .catch(err => {
+            showNotification('error', 'Ocorreu um erro interno de conexão.');
+            console.error(err);
+        });
 }
+
+// precarrega o calculo de imc
+document.addEventListener("DOMContentLoaded", function() {
+    calcularPreviaIMC();
+});

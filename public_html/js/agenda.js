@@ -276,15 +276,15 @@ document.querySelector(".day-panel > header button").addEventListener("click", (
     painel.classList.toggle("collapsed");
 });
 
-// --- REQUISIÇÃO AJAX (PHP) ---
+// --- REQUISIÇÃO api (PHP) ---
 function buscarEventosNoServidor(tipoVisao, dataInicio, dataFim) {
-	let ajax = new CustomAjax(true);
-	ajax.add("acao", "recuperarEventos");
-	ajax.add("visao", tipoVisao); 
-	ajax.add("data_inicio", dataInicio); 
-	ajax.add("data_fim", dataFim);       
+	let api = new CustomFetch();
+	api.add("acao", "recuperarEventos");
+	api.add("visao", tipoVisao); 
+	api.add("data_inicio", dataInicio); 
+	api.add("data_fim", dataFim);       
 
-	ajax.send("medplus.php").then(response => {
+	api.send("medplus.php").then(response => {
 		try {
 			let json = JSON.parse(response);
 			if (json.status) {
@@ -460,38 +460,38 @@ function salvarCompromisso() {
 	if (!inicio) { showNotification('error', 'A data de início é obrigatório.'); return; }
 	if (!fim) { showNotification('error', 'A data de fim é obrigatório.'); return; }
 
-    let ajax = new CustomAjax(true);
-    ajax.add("acao", idAtual ? "editarCompromisso" : "cadastrarCompromisso");
+    let api = new CustomFetch();
+    api.add("acao", idAtual ? "editarCompromisso" : "cadastrarCompromisso");
     if (idAtual) {
-        ajax.add("id", idAtual);
-        ajax.add("id_pagamento", document.getElementById('cad-id-pagamento').value);
+        api.add("id", idAtual);
+        api.add("id_pagamento", document.getElementById('cad-id-pagamento').value);
     }
     
-    ajax.add("tipo_cadastro", isPlantao ? "plantao" : "evento");
-    ajax.add("nome", titulo);
-    ajax.add("data_inicio", inicio);
-    ajax.add("data_fim", fim);
-    ajax.add("cor", document.getElementById('cad-cor').value);
-    ajax.add("icone", document.getElementById('cad-icone').value);
-    ajax.add("observacao", document.getElementById('cad-observacao').value);
+    api.add("tipo_cadastro", isPlantao ? "plantao" : "evento");
+    api.add("nome", titulo);
+    api.add("data_inicio", inicio);
+    api.add("data_fim", fim);
+    api.add("cor", document.getElementById('cad-cor').value);
+    api.add("icone", document.getElementById('cad-icone').value);
+    api.add("observacao", document.getElementById('cad-observacao').value);
 
     if (isPlantao) {
-        ajax.add("hospital", document.getElementById('cad-hospital').value);
+        api.add("hospital", document.getElementById('cad-hospital').value);
         let pagamentoSujo = document.getElementById('cad-pagamento').value;
         let pagamentoLimpo = pagamentoSujo ? pagamentoSujo.replace(/\./g, '').replace(',', '.') : "0";
-        ajax.add("pagamento", pagamentoLimpo);
-        ajax.add("data_prevista", document.getElementById('cad-prevista').value);
+        api.add("pagamento", pagamentoLimpo);
+        api.add("data_prevista", document.getElementById('cad-prevista').value);
         
         if (!idAtual && document.getElementById('cad-repetir').checked) {
-            ajax.add("repetir", 'sim');
-            ajax.add("periodo", document.getElementById('cad-periodo').value);
-            ajax.add("quantidade", document.getElementById('cad-quantidade').value);
+            api.add("repetir", 'sim');
+            api.add("periodo", document.getElementById('cad-periodo').value);
+            api.add("quantidade", document.getElementById('cad-quantidade').value);
         }
     } else {
-        ajax.add("id_tipeve", document.getElementById('cad-tipo-evento').value);
+        api.add("id_tipeve", document.getElementById('cad-tipo-evento').value);
     }
 
-    ajax.send("medplus.php").then(response => {
+    api.send("medplus.php").then(response => {
         try {
             let json = JSON.parse(response);
             if (json.status) {
@@ -507,10 +507,10 @@ function salvarCompromisso() {
 
 function marcarRecebido() {
     if(!eventoVisivelAtual || !eventoVisivelAtual.id_valor_receber) return;
-    let ajax = new CustomAjax(true);
-    ajax.add("acao", "marcarRecebido");
-    ajax.add("id_pagamento", eventoVisivelAtual.id_valor_receber);
-    ajax.send("medplus.php").then(response => {
+    let api = new CustomFetch();
+    api.add("acao", "marcarRecebido");
+    api.add("id_pagamento", eventoVisivelAtual.id_valor_receber);
+    api.send("medplus.php").then(response => {
         try {
             let json = JSON.parse(response);
             if(json.status) {
@@ -538,17 +538,17 @@ function excluirCompromisso() {
         }
     }
 
-    let ajax = new CustomAjax(true);
-    ajax.add("acao", "excluirCompromisso");
-    ajax.add("id", eventoVisivelAtual.id);
-    ajax.add("tipo_cadastro", eventoVisivelAtual.tipo_tabela);
-    ajax.add("excluir_todos", excluirTodosStr);
+    let api = new CustomFetch();
+    api.add("acao", "excluirCompromisso");
+    api.add("id", eventoVisivelAtual.id);
+    api.add("tipo_cadastro", eventoVisivelAtual.tipo_tabela);
+    api.add("excluir_todos", excluirTodosStr);
     
     if (eventoVisivelAtual.id_valor_receber) {
-        ajax.add("id_pagamento", eventoVisivelAtual.id_valor_receber);
+        api.add("id_pagamento", eventoVisivelAtual.id_valor_receber);
     }
 
-    ajax.send("medplus.php").then(response => {
+    api.send("medplus.php").then(response => {
         try {
             let json = JSON.parse(response);
             if(json.status) {

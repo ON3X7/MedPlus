@@ -31,11 +31,11 @@ function logar() {
 	}, 3000);
 	
 	
-	let ajaxAssincrono = new CustomAjax(true); // Alterado para assíncrono
-	ajaxAssincrono.add("acao", "checarCredenciaisLogin");
-	ajaxAssincrono.add("email", email.value);
-	ajaxAssincrono.add("senha", senha.value);
-	ajaxAssincrono.send("medplus.php").then(response => {
+	let api = new CustomFetch(); // Alterado para assíncrono
+	api.add("acao", "checarCredenciaisLogin");
+	api.add("email", email.value);
+	api.add("senha", senha.value);
+	api.send("medplus.php").then(response => {
        try {
 			let json = JSON.parse(response);
 			
@@ -96,12 +96,12 @@ function registrar() {
 		btn.disabled = false;
 	}, 3000);
 	
-	let ajaxAssincrono = new CustomAjax(true); // Alterado para assíncrono
-	ajaxAssincrono.add("acao", "checarCredenciaisCadastro");
-	ajaxAssincrono.add("nome", nome.value);
-	ajaxAssincrono.add("email", email.value);
-	ajaxAssincrono.add("senha", senha.value);
-	ajaxAssincrono.send("medplus.php").then(response => {
+	let api = new CustomFetch(); // Alterado para assíncrono
+	api.add("acao", "checarCredenciaisCadastro");
+	api.add("nome", nome.value);
+	api.add("email", email.value);
+	api.add("senha", senha.value);
+	api.send("medplus.php").then(response => {
        try {
 			let json = JSON.parse(response);
 			
@@ -204,13 +204,13 @@ window.addEventListener('load', function () {
 });
 
 function handleGoogleLogin(response) {
-    let ajaxAssincrono = new CustomAjax(true);
+    let api = new CustomFetch();
     
     // Passamos a ação 'loginGoogle' e o token recebido
-    ajaxAssincrono.add("acao", "loginGoogle");
-    ajaxAssincrono.add("credential", response.credential);
+    api.add("acao", "loginGoogle");
+    api.add("credential", response.credential);
     
-    ajaxAssincrono.send("medplus.php").then(res => {
+    api.send("medplus.php").then(res => {
         try {
             let json = JSON.parse(res);
             

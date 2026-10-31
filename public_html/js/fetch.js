@@ -41,39 +41,43 @@ class CustomFetch {
             return Promise.reject("Invalid URL");
         }
 
-        // 1. CHAMA O LOADING ANTES DA REQUISIÇÃO SAIR
         this.iniciarLoading();
 
-        const formData = new URLSearchParams(this.fields).toString();
+        // Verifica se algum dos valores guardados é um ficheiro (File ou Blob)
+        const contemFicheiro = Object.values(this.fields).some(val => val instanceof File || val instanceof Blob);
+        
+        let fetchOptions = { method: 'POST' };
+
+        if (contemFicheiro) {
+            // MODO ARQUIVO: Usa FormData. Não definimos o Content-Type para que 
+            // o próprio navegador crie a fronteira "multipart/form-data" correta.
+            const formData = new FormData();
+            for (const key in this.fields) {
+                formData.append(key, this.fields[key]);
+            }
+            fetchOptions.body = formData;
+        } else {
+            // MODO TEXTO: Comportamento original rápido (x-www-form-urlencoded)
+            fetchOptions.headers = { "Content-Type": "application/x-www-form-urlencoded" };
+            fetchOptions.body = new URLSearchParams(this.fields).toString();
+        }
 
         try {
-            // Faz o pedido com Fetch, usando POST e os mesmos cabeçalhos do XHR
-            const resposta = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: formData
-            });
-
-            // 2. DESLIGA O LOADING QUANDO TERMINAR
+            const resposta = await fetch(url, fetchOptions);
             this.pararLoading();
 
-            // Verifica se o status HTTP foi 200 a 299 (sucesso)
             if (resposta.ok) {
-                // Lemos a resposta como texto bruto para imitar o xhr.responseText
                 this.response = await resposta.text();
-                return this.response; // Isso resolve a Promise automaticamente
+                return this.response; 
             } else {
                 console.error("Error:", resposta.statusText);
-                throw resposta.statusText; // Dispara um erro que cairá no catch abaixo
+                throw resposta.statusText; 
             }
             
         } catch (erro) {
-            // Garante que o loading seja desligado até se a internet cair no meio do processo
             this.pararLoading(); 
             console.error("Fetch Error:", erro);
-            throw erro; // Rejeita a Promise, para que o .catch() lá no seu functions.js capture
+            throw erro; 
         }
     }
 
