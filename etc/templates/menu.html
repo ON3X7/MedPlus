@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="/css/animations.css">
     <link rel="stylesheet" href="/css/fontawesome-free-7.2.0-web/css/all.min.css">
 	<link rel="icon" type="image/x-icon" href="/img/iconApp_nobk_512x512.png">
-    <script src="/js/ajax.js"></script>
+    <script src="/js/fetch.js"></script>
     <script src="/js/notification.js"></script>
     <script src="/js/animations.js"></script>
 </head>
@@ -65,7 +65,7 @@
 							</div>
 						</div>
 						<div class="dropdown-body-google">
-							<button class="dropdown-btn" onclick="mudarModulo('Ajustes'); document.querySelector('.profile').classList.remove('active');">
+							<button class="dropdown-btn" onclick="mudarModulo('Ajustes'); abrirSubPagina('subpag-conta'); document.querySelector('.profile').classList.remove('active');">
 								<i class="fa-solid fa-sliders"></i> Configurações
 							</button>
 						</div>
@@ -401,7 +401,8 @@
                     <center class="w3-tiny">Cuidando de você em todos os momentos</center>
                     <br>
                     <span>Versão {{VERSAO_APP}}</span><br>
-                    <span>Criado por: {{AUTORES_APP}}</span>
+                    <span>Criado por: {{AUTORES_APP}}</span><br>
+                    <span>{{COPYRIGHT_APP}}</span>
                     <br><br>
                     <a href="#" style="text-decoration:none; color: #0da99a;"><em>Central de Suporte</em></a>
                 </article>
@@ -417,7 +418,7 @@
                 <form id="form-ajuste-conta" class="w3-card w3-white w3-round-large w3-padding-large">
                     <div class="w3-center" style="margin-bottom: 25px; position:relative;">
                         {{FOTO_PERFIL_GRANDE}}
-                        <button type="button" class="btn-trocar-foto with-ripple"><i class="fa-solid fa-camera"></i></button>
+                        <button type="button" class="btn-trocar-foto with-ripple" style="display:flex;"><i class="fa-solid fa-camera"></i></button>
                     </div>
                     
                     <div class="input-group">

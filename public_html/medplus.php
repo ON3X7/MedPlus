@@ -171,9 +171,24 @@
 			
 			// 4. Substituições do Rodapé (Versão e Autores)
 			$versao = $GLOBALS['version'] ?? '0.0.5 alpha';
-			$autores = $GLOBALS['authors'] ?? 'Equipe Med+';
+			
+			if (isset($GLOBALS['authors'])) {
+				if (is_array($GLOBALS['authors'])) {
+					// Se for um array (como esperado), junta os nomes com ", "
+					$autores = implode(', ', $GLOBALS['authors']);
+				} else {
+					// Se por algum motivo for uma string, apenas a usa diretamente
+					$autores = $GLOBALS['authors'];
+				}
+			} else {
+				$autores = 'Equipe Med+';
+			}
+			
+			$copyright = $GLOBALS['copyright'];
+			
 			$html = str_replace('{{VERSAO_APP}}', $versao, $html);
 			$html = str_replace('{{AUTORES_APP}}', $autores, $html);
+			$html = str_replace('{{COPYRIGHT_APP}}', $copyright, $html);
 			
 			$oCorpo->conteudo = $html;
 			$oCorpo->imprimir();
@@ -375,7 +390,7 @@
 			}
 		}
 
-		// Recebe e processa o upload de ficheiros binários da Foto de Perfil
+		// Recebe, redimensiona, comprime e guarda a Foto de Perfil
 		function uploadFotoPerfil() {
 			if (!isset($_SESSION['user']['id'])) return;
 
@@ -383,36 +398,77 @@
 				$id_usuario = $_SESSION['user']['id'];
 				$nomeCompleto = $_SESSION['user']['nome'];
 				
-				// Formata o nome para remover espaços e caracteres especiais (ex: "Dr. João Silva" -> "dr_joao_silva")
+				// Formata o nome da pasta
 				$nomeFormatado = preg_replace('/[^a-zA-Z0-9]+/', '_', strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $nomeCompleto)));
 				
-				// Define os caminhos absolutos e relativos
 				$pastaDestinoAbsoluta = __DIR__ . "/img/users/" . $nomeFormatado;
-				$nomeArquivo = "user_profile_" . $id_usuario . ".png";
+				
+				// Forçamos a extensão para .jpg para garantir maior compressão
+				$nomeArquivo = "user_profile_" . $id_usuario . ".jpg";
 				$caminhoCompleto = $pastaDestinoAbsoluta . "/" . $nomeArquivo;
 				$caminhoRelativo = "/img/users/" . $nomeFormatado . "/" . $nomeArquivo;
 				
-				// Cria a pasta do utilizador caso ela ainda não exista
 				if (!is_dir($pastaDestinoAbsoluta)) {
 					mkdir($pastaDestinoAbsoluta, 0755, true);
 				}
 
-				// Move a foto da pasta temporária do PHP para a pasta final do utilizador
-				if (move_uploaded_file($_FILES['foto']['tmp_name'], $caminhoCompleto)) {
+				$arquivoTemp = $_FILES['foto']['tmp_name'];
+				$tipoMime = mime_content_type($arquivoTemp);
+
+				// 1. Carrega a imagem original para a memória RAM do PHP baseado no tipo
+				switch ($tipoMime) {
+					case 'image/jpeg': $imagemOriginal = imagecreatefromjpeg($arquivoTemp); break;
+					case 'image/png':  $imagemOriginal = imagecreatefrompng($arquivoTemp); break;
+					case 'image/webp': $imagemOriginal = imagecreatefromwebp($arquivoTemp); break;
+					default:
+						echo json_encode(['status' => false, 'mensagem' => 'Formato de imagem não suportado.']);
+						return;
+				}
+
+				// 2. Lê as dimensões da foto original
+				list($larguraOriginal, $alturaOriginal) = getimagesize($arquivoTemp);
+
+				// 3. Calcula as novas dimensões mantendo a proporção (Máximo de 400px)
+				$tamanhoMaximo = 250;
+				if ($larguraOriginal > $tamanhoMaximo || $alturaOriginal > $tamanhoMaximo) {
+					$proporcao = min($tamanhoMaximo / $larguraOriginal, $tamanhoMaximo / $alturaOriginal);
+					$novaLargura = round($larguraOriginal * $proporcao);
+					$novaAltura = round($alturaOriginal * $proporcao);
+				} else {
+					$novaLargura = $larguraOriginal;
+					$novaAltura = $alturaOriginal;
+				}
+
+				// 4. Cria um "quadro em branco" com o novo tamanho
+				$imagemRedimensionada = imagecreatetruecolor($novaLargura, $novaAltura);
+
+				// Preenche o fundo de branco (evita que PNGs transparentes fiquem com fundo preto ao virar JPG)
+				$fundoBranco = imagecolorallocate($imagemRedimensionada, 255, 255, 255);
+				imagefill($imagemRedimensionada, 0, 0, $fundoBranco);
+
+				// 5. Copia e redimensiona a imagem original para dentro do novo quadro suavemente
+				imagecopyresampled($imagemRedimensionada, $imagemOriginal, 0, 0, 0, 0, $novaLargura, $novaAltura, $larguraOriginal, $alturaOriginal);
+
+				// 6. Guarda o novo quadro comprimido no disco rígido (75 é a qualidade de 0 a 100)
+				if (imagejpeg($imagemRedimensionada, $caminhoCompleto, 75)) {
 					
+					// Salva o caminho no banco de dados
 					$oUsua = new usuarioDAO();
 					$oUsua->atualizarFoto($id_usuario, $caminhoRelativo);
 					
-					// Atualiza a sessão com a nova URL
 					$_SESSION['user']['imagem'] = $caminhoRelativo;
-
-					// Devolve o caminho relativo para o JavaScript poder trocar o src da <img> imediatamente
 					echo json_encode(['status' => true, 'nova_url' => $caminhoRelativo]);
+					
 				} else {
-					echo json_encode(['status' => false, 'mensagem' => 'Erro ao mover a imagem para a pasta do servidor.']);
+					echo json_encode(['status' => false, 'mensagem' => 'Erro ao processar e salvar a imagem.']);
 				}
+
+				// 7. Limpa a memória RAM do servidor
+				imagedestroy($imagemOriginal);
+				imagedestroy($imagemRedimensionada);
+
 			} else {
-				echo json_encode(['status' => false, 'mensagem' => 'Nenhuma imagem foi recebida ou houve erro no upload.']);
+				echo json_encode(['status' => false, 'mensagem' => 'Nenhuma imagem foi recebida.']);
 			}
 		}
 	}
