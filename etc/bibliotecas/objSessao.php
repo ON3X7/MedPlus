@@ -32,8 +32,8 @@
 				// Query EXCLUSIVA para Google: Ignora a senha, checa apenas o email
 				$params = array ($campos['email']);
 				
-				$_SESSION['user'] = $db->adicionar("SELECT id, nome, email, data_nascimento, sexo, imagem, via_google, ultimo_acesso")
-									   ->adicionar("FROM usuario WHERE email = $1")
+				$_SESSION['user'] = $db->adicionar("SELECT usua.id, usua.nome, usua.email, usua.data_nascimento, usua.sexo, usua.imagem, usua.via_google, usua.ultimo_acesso, imc.altura, imc.peso")
+									   ->adicionar("FROM usuario usua LEFT JOIN imc imc ON imc.id_usuari = usua.id WHERE usua.email = $1")
 									   ->realizarQuery($params)
 									   ->recuperar();
 			} else {
@@ -43,8 +43,8 @@
 					hash('sha256', $campos['senha'])
 				);
 				
-				$_SESSION['user'] = $db->adicionar("SELECT id, nome, email, data_nascimento, sexo, imagem, via_google, ultimo_acesso")
-									   ->adicionar("FROM usuario WHERE email = $1 AND senha = $2")
+				$_SESSION['user'] = $db->adicionar("SELECT usua.id, usua.nome, usua.email, usua.data_nascimento, usua.sexo, usua.imagem, usua.via_google, usua.ultimo_acesso, imc.altura, imc.peso")
+									   ->adicionar("FROM usuario usua LEFT JOIN imc imc ON imc.id_usuari = usua.id WHERE usua.email = $1 AND usua.senha = $2")
 									   ->realizarQuery($params)
 									   ->recuperar();
 			}
