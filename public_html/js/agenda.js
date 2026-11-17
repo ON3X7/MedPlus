@@ -483,9 +483,11 @@ function salvarCompromisso() {
         api.add("data_prevista", document.getElementById('cad-prevista').value);
         
         if (!idAtual && document.getElementById('cad-repetir').checked) {
+            const ehIndefinido = document.getElementById('cad-indefinido').checked;
             api.add("repetir", 'sim');
             api.add("periodo", document.getElementById('cad-periodo').value);
-            api.add("quantidade", document.getElementById('cad-quantidade').value);
+            api.add("indefinido", ehIndefinido ? 'sim' : 'nao');
+            api.add("quantidade", ehIndefinido ? '52' : document.getElementById('cad-quantidade').value);
         }
     } else {
         api.add("id_tipeve", document.getElementById('cad-tipo-evento').value);
