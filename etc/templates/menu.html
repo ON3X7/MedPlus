@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/w3.css">
     <link rel="stylesheet" href="/css/menu.css">
     <link rel="stylesheet" href="/css/agenda.css">
+    <link rel="stylesheet" href="/css/habitos.css">
     <link rel="stylesheet" href="/css/ajustes.css">
     <link rel="stylesheet" href="/css/notification.css">
     <link rel="stylesheet" href="/css/animations.css">
@@ -24,7 +25,7 @@
 			<button class="w3-bar-item w3-button menu-item" data-module="Início"><i class="fa-solid fa-house"></i>&emsp;<span>Início</span></button>
 			<button class="w3-bar-item w3-button menu-item" data-module="Agenda"><i class="fa-solid fa-calendar-days"></i>&emsp;<span>Agenda</span></button>
 			<button class="w3-bar-item w3-button menu-item" data-module="Financeiro"><i class="fa-solid fa-wallet"></i>&emsp;<span>Financeiro</span></button>
-			<button class="w3-bar-item w3-button menu-item" data-module="Sonhos"><i class="fa-solid fa-star"></i>&emsp;<span>Sonhos</span></button>
+			<button class="w3-bar-item w3-button menu-item" data-module="Hábitos"><i class="fa-solid fa-leaf"></i></i>&emsp;<span>Hábitos</span></button>
 			<button class="w3-bar-item w3-button menu-item" data-module="Metas"><i class="fa-solid fa-bullseye"></i>&emsp;<span>Metas</span></button>
 			<button class="w3-bar-item w3-button menu-item" data-module="Ajustes"><i class="fa-solid fa-sliders"></i>&emsp;<span>Ajustes</span></button>
 		  </nav>
@@ -318,17 +319,65 @@
             </div>
           </div>
 
-          <!-- PÁGINA: SONHOS -->
-          <div class="content w3-container module-page" id="pag-sonhos" style="display: none;">
-            <section class="heading">
-                <div><small>ALCANÇAR SONHOS</small><h1>Sonhos</h1><p>Defina sonhos que você almeja.</p></div>
-            </section>
-            <div style="height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #aab9c4; text-align: center;">
-                <i class="fa-solid fa-chart-line" style="font-size: 3rem; margin-bottom: 15px; color: #e1e8eb;"></i>
-                <p>Módulo de Sonhos em construção.</p>
-            </div>
-          </div>
+          <!-- PÁGINA: HÁBITOS -->
+		  <div class="content w3-container module-page" id="pag-habitos" style="display: none;" aria-live="polite"></div>
+			
+			<!-- MODAL CADASTRO HABITOS-->
+			<div id="modal-habitos" class="w3-modal custom-modal-overlay" style="padding-top: 5vh;">
+				<div class="w3-modal-content w3-animate-zoom custom-modal-box">
+					<header class="modal-header">
+						<h3><i class="fa-solid fa-seedling"></i> Novo Hábito</h3>
+						<button onclick="fecharModal('modal-habitos')" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+					</header>
+					
+					<div class="modal-body">
+						<form id="form-habito" name="form-habito" method="POST" action="">
+							<input type="hidden" id="hab-id" value="">
+							<input type="hidden" id="hab-id-pagamento" value="">
+							
+							<div class="input-group">
+								<label for="hab-nome">Nome</label>
+								<input type="text" id="hab-nome" placeholder="Ex: Dar uma pausa" required>
+							</div>
 
+							<div class="w3-row">
+								<div class="input-group w3-left w3-mobile" style="width:49%;">
+									<label for="hab-cor">Cor de Destaque</label>
+									<input type="color" id="hab-cor" class="custom-color-input" value="#0da99a" title="Escolha a cor do compromisso">
+								</div>
+								<div class="input-group w3-right w3-mobile" style="width:49%;">
+									<label for="hab-icone">Ícone de Destaque</label>
+									<select id="hab-icone">
+										<option value="fa-solid fa-glass-water">🥛 Beber</option>
+										<option value="fa-solid fa-person-walking">🚶‍♂Caminhar</option>
+										<option value="fa-solid fa-moon">🌕 Passear</option>
+										<option value="fa-solid fa-spa">♨️ Relaxar</option>
+										<option value="fa-solid fa-book-open">📖 Ler</option>
+										<option value="fa-solid fa-dumbbell">🏋️ Exercitar</option>
+										<option value="fa-solid fa-apple-whole">🍎 Comer</option>
+										<option value="fa-solid fa-child-reaching">👶 Cuidar</option>
+										<option value="fa-solid fa-pills">💊 Medicar</option>
+										<option value="fa-solid fa-brain">🧠 Praticar</option>
+										<option value="fa-solid fa-heart-pulse">💓 Sentir</option>
+										<option value="fa-solid fa-bicycle">🚴 Pedalar</option>
+										<option value="fa-solid fa-bed">🛌 Dormir</option>
+										<option value="fa-solid fa-mug-hot">☕ Pausar</option>
+										<option value="fa-solid fa-tooth">🦷 Comprometer</option>
+										<option value="fa-solid fa-mobile-screen">📱 Ligar</option>
+										<option value="fa-solid fa-sun">☀️ Aproveitar</option>
+										<option value="fa-solid fa-droplet">💧 Limpar</option>
+									</select>
+								</div>
+							</div>
+						</form>
+					</div>					
+					<footer class="modal-footer">
+						<button class="btn-outline" onclick="fecharModal('modal-habitos')">Cancelar</button>
+						<button class="btn-primary" onclick="salvarHabito()"><i class="fa-solid fa-check"></i> Salvar</button>
+					</footer>
+				</div>
+			</div>
+			
           <!-- PÁGINA: METAS -->
           <div class="content w3-container module-page" id="pag-metas" style="display: none;">
             <section class="heading">
@@ -510,13 +559,14 @@
 		  <button class="w3-bar-item menu-item" data-module="Início"><i class="fa-solid fa-house"></i><br><span>Início</span></button>
 		  <button class="w3-bar-item menu-item" data-module="Agenda"><i class="fa-solid fa-calendar-days"></i><br><span>Agenda</span></button>
 		  <button class="w3-bar-item menu-item" data-module="Financeiro"><i class="fa-solid fa-wallet"></i><br><span>Financeiro</span></button>
-		  <button class="w3-bar-item menu-item" data-module="Sonhos"><i class="fa-solid fa-star"></i><br><span>Sonhos</span></button>
+		  <button class="w3-bar-item menu-item" data-module="Hábitos"><i class="fa-solid fa-leaf"></i></i><br><span>Hábitos</span></button>
 		  <button class="w3-bar-item menu-item" data-module="Metas"><i class="fa-solid fa-bullseye"></i><br><span>Metas</span></button>
 		</nav>
 		<div class="toast" id="toast" hidden></div>
 	  </div>
 	  <script src="/js/utilitarios.js"></script>
 	  <script src="/js/agenda.js"></script>
+	  <script src="/js/habitos.js"></script>
 	  <script src="/js/ajustes.js"></script>
 </body>
 </html>

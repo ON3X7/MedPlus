@@ -6,6 +6,7 @@
 	include $GLOBALS['caminho']['bibliotecas'].'lib1.php'; // biblioteca principal v1
 	include $GLOBALS['caminho']['dao'].'usuarioDao.php'; // dao dos usuarios
 	include $GLOBALS['caminho']['dao'].'agendaDao.php'; // dao da agenda
+	include $GLOBALS['caminho']['dao'].'habitosDao.php'; // dao de habitos
 	include $GLOBALS['caminho']['dao'].'imcDao.php'; // dao do imc
 	
 	Session::start();
@@ -226,6 +227,7 @@
 			}
 		}
 		
+		
 		// AREA DE REQUISICAO GOOGLE
 		function loginGoogle() {
 			$token = $this->campos['credential'] ?? '';
@@ -276,6 +278,7 @@
 				echo json_encode(array('status' => false, 'mensagem' => 'Falha ao decodificar dados do Google.'));
 			}
 		}
+		
 		
 		// AREA DE MODULO AGENDA
 		function recuperarEventos() {
@@ -355,6 +358,59 @@
 			
 			echo json_encode(array('status' => $sucesso !== false));
 		}
+		
+		
+		//AREA DO MODULO DE HABITOS
+		function carregarPainelHabitos() {
+			if (!isset($_SESSION['user']['id'])) return;
+			$oHab = new habitosDAO();
+			$resultados = $oHab->listarHabitosAtivos($_SESSION['user']['id']);
+			echo json_encode(array('status' => true, 'dados' => $resultados));
+		}
+
+		function salvarHabitosIniciais() {
+			if (!isset($_SESSION['user']['id']) || empty($this->campos['habitos_json'])) return;
+			$listaHabitos = json_decode($this->campos['habitos_json'], true);
+			$oHab = new habitosDAO();
+			$sucesso = $oHab->inserirRotinaInicial($_SESSION['user']['id'], $listaHabitos);
+			echo json_encode(array('status' => $sucesso));
+		}
+
+		function processarHabitoModal() {
+			if (!isset($_SESSION['user']['id'])) return;
+			$oHab = new habitosDAO();
+			
+			// Se o ID estiver vazio (novo), insere. Se estiver preenchido (edição), atualiza.
+			if (empty($this->campos['id_habito'])) {
+				$sucesso = $oHab->inserirHabitoUnico($this->campos, $_SESSION['user']['id']);
+			} else {
+				$sucesso = $oHab->atualizarHabito($this->campos, $_SESSION['user']['id']);
+			}
+			
+			echo json_encode(array('status' => $sucesso));
+		}
+
+		function apagarHabito() {
+			if (!isset($_SESSION['user']['id']) || empty($this->campos['id_habito'])) return;
+			$oHab = new habitosDAO();
+			$sucesso = $oHab->apagarHabitoCompleto($this->campos['id_habito'], $_SESSION['user']['id']);
+			echo json_encode(array('status' => $sucesso));
+		}
+
+		function alternarConclusaoHabito() {
+			if (!isset($_SESSION['user']['id'])) return;
+			$oHab = new habitosDAO();
+			$res = $oHab->alternarHistorico($this->campos['id_habito'], $_SESSION['user']['id'], $this->campos['data']);
+			echo json_encode($res);
+		}
+
+		function obterHistoricoMes() {
+			if (!isset($_SESSION['user']['id'])) return;
+			$oHab = new habitosDAO();
+			$resultados = $oHab->obterHistorico($this->campos['id_habito'], $this->campos['ano'], $this->campos['mes']);
+			echo json_encode(array('status' => true, 'dados' => $resultados));
+		}
+		
 		
 		// AREA DE MODULO AJUSTES (CONTA E SAÚDE)
 		function atualizarConta() {
